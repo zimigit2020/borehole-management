@@ -1,9 +1,3 @@
-// Fix for crypto in Node.js 18 - MUST be before any imports
-if (typeof globalThis.crypto === 'undefined') {
-  const crypto = require('crypto');
-  globalThis.crypto = crypto.webcrypto || crypto;
-}
-
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
