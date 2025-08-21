@@ -23,9 +23,16 @@ import { SyncModule } from './sync/sync.module';
         
         // Parse DATABASE_URL if it exists
         if (databaseUrl) {
+          // Parse the URL to extract components
+          const url = new URL(databaseUrl);
+          
           return {
             type: 'postgres',
-            url: databaseUrl,
+            host: url.hostname,
+            port: parseInt(url.port) || 5432,
+            username: url.username,
+            password: url.password,
+            database: url.pathname.slice(1), // Remove leading slash
             autoLoadEntities: true,
             synchronize: false,
             logging: !isProduction,
@@ -33,11 +40,6 @@ import { SyncModule } from './sync/sync.module';
             ssl: isProduction ? {
               rejectUnauthorized: false
             } : false,
-            extra: isProduction ? {
-              ssl: {
-                rejectUnauthorized: false
-              }
-            } : {},
           };
         }
         
