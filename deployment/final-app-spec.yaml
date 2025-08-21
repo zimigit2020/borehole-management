@@ -2,7 +2,7 @@ name: borehole-management
 region: fra
 services:
 - build_command: npm run build
-  environment_slug: node-js
+  environment_slug: node-js-v20
   github:
     branch: master
     deploy_on_push: true
