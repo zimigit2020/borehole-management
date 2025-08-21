@@ -17,14 +17,22 @@ import { SyncModule } from './sync/sync.module';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.get('DATABASE_URL'),
-        autoLoadEntities: true,
-        synchronize: process.env.NODE_ENV === 'development',
-        logging: process.env.NODE_ENV === 'development',
-        ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const isProduction = process.env.NODE_ENV === 'production';
+        return {
+          type: 'postgres',
+          url: configService.get('DATABASE_URL'),
+          autoLoadEntities: true,
+          synchronize: false, // Never auto-sync in production
+          logging: !isProduction,
+          ssl: isProduction ? { rejectUnauthorized: false } : false,
+          extra: isProduction ? {
+            ssl: {
+              rejectUnauthorized: false,
+            },
+          } : {},
+        };
+      },
       inject: [ConfigService],
     }),
     AuthModule,
