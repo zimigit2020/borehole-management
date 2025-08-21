@@ -11,6 +11,9 @@ import JobList from './pages/Jobs/JobList';
 import MapView from './pages/MapView';
 import UserManagement from './pages/Users/UserManagement';
 import SurveyReports from './pages/Surveys/SurveyReports';
+import InventoryManagement from './pages/Inventory/InventoryManagement';
+import FinanceManagement from './pages/Finance/FinanceManagement';
+import DrillingOperations from './pages/Drilling/DrillingOperations';
 
 const theme = createTheme({
   palette: {
@@ -114,6 +117,9 @@ function App() {
               <Route path="map" element={<MapView />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="surveys" element={<SurveyReports />} />
+              <Route path="drilling" element={<DrillingOperations />} />
+              <Route path="inventory" element={<InventoryManagement />} />
+              <Route path="finance" element={<FinanceManagement />} />
               <Route path="reports" element={<div>Analytics (Coming Soon)</div>} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

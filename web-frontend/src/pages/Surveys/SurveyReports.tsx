@@ -150,6 +150,49 @@ const SurveyReports: React.FC = () => {
 
   // Mock data for development
   useEffect(() => {
+    // Base64 encoded 1x1 pixel images with different colors for demo
+    const resistivityGraphDataUri = 'data:image/svg+xml;base64,' + btoa(`
+      <svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+        <rect width="600" height="400" fill="#f0f0f0"/>
+        <text x="300" y="50" font-family="Arial" font-size="20" text-anchor="middle" fill="#333">Resistivity Profile</text>
+        <line x1="60" y1="350" x2="540" y2="350" stroke="#333" stroke-width="2"/>
+        <line x1="60" y1="350" x2="60" y2="50" stroke="#333" stroke-width="2"/>
+        <text x="300" y="380" font-family="Arial" font-size="14" text-anchor="middle" fill="#666">Distance (m)</text>
+        <text x="30" y="200" font-family="Arial" font-size="14" text-anchor="middle" fill="#666" transform="rotate(-90 30 200)">Resistivity (Ωm)</text>
+        <polyline points="60,300 120,280 180,250 240,200 300,180 360,190 420,220 480,240 540,230" 
+                  stroke="#4CAF50" stroke-width="3" fill="none"/>
+        <polyline points="60,320 120,310 180,290 240,260 300,240 360,250 420,270 480,280 540,275" 
+                  stroke="#2196F3" stroke-width="3" fill="none"/>
+        <rect x="450" y="100" width="120" height="60" fill="white" stroke="#ccc"/>
+        <line x1="460" y1="120" x2="480" y2="120" stroke="#4CAF50" stroke-width="3"/>
+        <text x="485" y="125" font-family="Arial" font-size="12" fill="#333">Layer 1</text>
+        <line x1="460" y1="140" x2="480" y2="140" stroke="#2196F3" stroke-width="3"/>
+        <text x="485" y="145" font-family="Arial" font-size="12" fill="#333">Layer 2</text>
+      </svg>
+    `);
+
+    const sitePhoto1DataUri = 'data:image/svg+xml;base64,' + btoa(`
+      <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="300" fill="#E3F2FD"/>
+        <rect x="50" y="200" width="300" height="80" fill="#8D6E63"/>
+        <polygon points="200,50 350,200 50,200" fill="#4CAF50"/>
+        <circle cx="320" cy="80" r="30" fill="#FFC107"/>
+        <text x="200" y="250" font-family="Arial" font-size="16" text-anchor="middle" fill="#333">Site Photo 1</text>
+      </svg>
+    `);
+
+    const sitePhoto2DataUri = 'data:image/svg+xml;base64,' + btoa(`
+      <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="300" fill="#FFF3E0"/>
+        <rect x="150" y="100" width="100" height="150" fill="#795548"/>
+        <polygon points="150,100 200,50 250,100" fill="#D32F2F"/>
+        <rect x="170" y="120" width="30" height="40" fill="#03A9F4"/>
+        <rect x="200" y="120" width="30" height="40" fill="#03A9F4"/>
+        <rect x="170" y="180" width="60" height="70" fill="#8D6E63"/>
+        <text x="200" y="280" font-family="Arial" font-size="16" text-anchor="middle" fill="#333">Site Photo 2</text>
+      </svg>
+    `);
+
     const mockReports: SurveyReport[] = [
       {
         id: '1',
@@ -172,10 +215,10 @@ const SurveyReports: React.FC = () => {
         recommendations: 'Driller is recommended to use a temporal casing to counteract collapsing formation(boulders). Driller advised to reach minimum and maximum depth unless adequate yield has been reached.',
         specialNotes: 'Site has good potential for water yield based on resistivity profiles',
         disclaimer: 'The results of this survey are based on observed geology and resistivity profiles. However on account of the erratic changes to constitutions of the surface and underground water bodies due to global climatic changes, borehole/well yield as a Function of rate of recharge, may adversely affect the high to moderate groundwater potential of the area indicated by profile results of the survey.',
-        resistivityGraphUrl: 'https://via.placeholder.com/600x400/4CAF50/FFFFFF?text=Resistivity+Graph',
+        resistivityGraphUrl: resistivityGraphDataUri,
         sitePhotos: [
-          'https://via.placeholder.com/400x300/2196F3/FFFFFF?text=Site+Photo+1',
-          'https://via.placeholder.com/400x300/FF9800/FFFFFF?text=Site+Photo+2'
+          sitePhoto1DataUri,
+          sitePhoto2DataUri
         ],
         status: 'pending',
         createdAt: new Date().toISOString(),
@@ -204,11 +247,56 @@ const SurveyReports: React.FC = () => {
         updatedAt: new Date(Date.now() - 86400000).toISOString(),
         approvedBy: 'Admin',
         approvedAt: new Date(Date.now() - 43200000).toISOString(),
-        resistivityGraphUrl: 'https://via.placeholder.com/600x400/9C27B0/FFFFFF?text=Resistivity+Graph+2',
+        resistivityGraphUrl: 'data:image/svg+xml;base64,' + btoa(`
+          <svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+            <rect width="600" height="400" fill="#f5f5f5"/>
+            <text x="300" y="50" font-family="Arial" font-size="20" text-anchor="middle" fill="#333">VES Sounding Curve</text>
+            <line x1="60" y1="350" x2="540" y2="350" stroke="#333" stroke-width="2"/>
+            <line x1="60" y1="350" x2="60" y2="50" stroke="#333" stroke-width="2"/>
+            <text x="300" y="380" font-family="Arial" font-size="14" text-anchor="middle" fill="#666">Electrode Spacing (m)</text>
+            <text x="30" y="200" font-family="Arial" font-size="14" text-anchor="middle" fill="#666" transform="rotate(-90 30 200)">Apparent Resistivity</text>
+            <polyline points="80,320 140,300 200,270 260,240 320,210 380,200 440,195 500,190" 
+                      stroke="#9C27B0" stroke-width="3" fill="none"/>
+            <circle cx="80" cy="320" r="4" fill="#9C27B0"/>
+            <circle cx="140" cy="300" r="4" fill="#9C27B0"/>
+            <circle cx="200" cy="270" r="4" fill="#9C27B0"/>
+            <circle cx="260" cy="240" r="4" fill="#9C27B0"/>
+            <circle cx="320" cy="210" r="4" fill="#9C27B0"/>
+            <circle cx="380" cy="200" r="4" fill="#9C27B0"/>
+            <circle cx="440" cy="195" r="4" fill="#9C27B0"/>
+            <circle cx="500" cy="190" r="4" fill="#9C27B0"/>
+          </svg>
+        `),
         sitePhotos: [
-          'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Site+Photo+3',
-          'https://via.placeholder.com/400x300/E91E63/FFFFFF?text=Site+Photo+4',
-          'https://via.placeholder.com/400x300/00BCD4/FFFFFF?text=Site+Photo+5'
+          'data:image/svg+xml;base64,' + btoa(`
+            <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="300" fill="#C8E6C9"/>
+              <rect x="100" y="150" width="200" height="120" fill="#795548"/>
+              <polygon points="100,150 200,80 300,150" fill="#F44336"/>
+              <rect x="140" y="180" width="40" height="60" fill="#1976D2"/>
+              <rect x="220" y="180" width="40" height="60" fill="#1976D2"/>
+              <text x="200" y="290" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">School Building</text>
+            </svg>
+          `),
+          'data:image/svg+xml;base64,' + btoa(`
+            <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="300" fill="#FFE0B2"/>
+              <ellipse cx="200" cy="250" rx="150" ry="30" fill="#8D6E63"/>
+              <rect x="190" y="100" width="20" height="150" fill="#795548"/>
+              <circle cx="200" cy="100" r="50" fill="#4CAF50"/>
+              <text x="200" y="280" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Drilling Site</text>
+            </svg>
+          `),
+          'data:image/svg+xml;base64,' + btoa(`
+            <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="300" fill="#E1F5FE"/>
+              <rect x="50" y="200" width="300" height="80" fill="#A1887F"/>
+              <rect x="150" y="120" width="100" height="80" fill="#607D8B"/>
+              <polygon points="150,120 200,70 250,120" fill="#37474F"/>
+              <circle cx="350" cy="50" r="25" fill="#FFEB3B"/>
+              <text x="200" y="260" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Equipment Setup</text>
+            </svg>
+          `)
         ],
         syncedAt: new Date().toISOString(),
       }

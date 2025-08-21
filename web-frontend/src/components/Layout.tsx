@@ -27,6 +27,8 @@ import {
   Assignment,
   Logout,
   AccountCircle,
+  Inventory,
+  AccountBalance,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -60,8 +62,11 @@ const Layout: React.FC = () => {
     { text: 'Dashboard', icon: <Dashboard />, path: '/' },
     { text: 'Jobs', icon: <Work />, path: '/jobs' },
     { text: 'Map View', icon: <Map />, path: '/map' },
-    { text: 'Users', icon: <People />, path: '/users' },
     { text: 'Survey Reports', icon: <Assignment />, path: '/surveys' },
+    { text: 'Drilling Ops', icon: <Work />, path: '/drilling' },
+    { text: 'Inventory', icon: <Inventory />, path: '/inventory' },
+    { text: 'Finance', icon: <AccountBalance />, path: '/finance' },
+    { text: 'Users', icon: <People />, path: '/users' },
     { text: 'Analytics', icon: <Assessment />, path: '/reports' },
   ];
 
