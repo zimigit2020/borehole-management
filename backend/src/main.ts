@@ -5,10 +5,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  // For DigitalOcean managed databases with self-signed certificates
-  if (process.env.NODE_ENV === 'production') {
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-  }
   const app = await NestFactory.create(AppModule);
 
   // Global validation pipe
