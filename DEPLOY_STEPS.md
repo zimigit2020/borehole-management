@@ -63,12 +63,12 @@ Or use the DigitalOcean database console.
 
 ## Test Your API
 
-Your app URL will be something like:
-`https://borehole-management-xxxxx.ondigitalocean.app`
+Your app URL is:
+`https://borehole-management-nuyvk.ondigitalocean.app`
 
 Test endpoints:
-- Health: `https://your-app.ondigitalocean.app/api/v1/health`
-- Docs: `https://your-app.ondigitalocean.app/api/docs`
+- Health: `https://borehole-management-nuyvk.ondigitalocean.app/api/v1/health`
+- Docs: `https://borehole-management-nuyvk.ondigitalocean.app/api/docs`
 
 ## Default Login
 - Email: `admin@borehole.com`

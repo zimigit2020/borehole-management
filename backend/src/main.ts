@@ -17,9 +17,26 @@ async function bootstrap() {
   );
 
   // CORS configuration
+  const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'];
   app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or Postman)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        // In production, also allow localhost:3000 for development
+        if (origin === 'http://localhost:3000' || origin === 'http://localhost:3001') {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
 
   // API prefix

@@ -29,7 +29,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://your-api.ondigitalocean.com/api/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"https://borehole-management-nuyvk.ondigitalocean.app/api/v1/\"")
         }
         debug {
             isMinifyEnabled = false

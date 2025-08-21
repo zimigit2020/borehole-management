@@ -1,0 +1,23 @@
+name: untapped-ums-frontend
+region: lon
+services:
+  - build_command: npm run build
+    environment_slug: node-js
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: zimigit2020/borehole-management
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: professional-xs
+    name: ums-frontend
+    routes:
+      - path: /
+    run_command: npx serve -s build -l 8080
+    source_dir: /web-frontend
+    envs:
+      - key: REACT_APP_API_URL
+        value: "https://borehole-management-nuyvk.ondigitalocean.app/api/v1"
+      - key: REACT_APP_GOOGLE_MAPS_API_KEY
+        value: "${GOOGLE_MAPS_API_KEY}"
+        type: SECRET
