@@ -19,18 +19,20 @@ import { SyncModule } from './sync/sync.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const isProduction = process.env.NODE_ENV === 'production';
+        const databaseUrl = configService.get('DATABASE_URL');
+        
+        // For DigitalOcean, we need to append SSL params to the URL
+        const finalUrl = isProduction && databaseUrl && !databaseUrl.includes('sslmode=') 
+          ? `${databaseUrl}?sslmode=require`
+          : databaseUrl;
+        
         return {
           type: 'postgres',
-          url: configService.get('DATABASE_URL'),
+          url: finalUrl,
           autoLoadEntities: true,
           synchronize: false, // Never auto-sync in production
           logging: !isProduction,
           ssl: isProduction ? { rejectUnauthorized: false } : false,
-          extra: isProduction ? {
-            ssl: {
-              rejectUnauthorized: false,
-            },
-          } : {},
         };
       },
       inject: [ConfigService],
