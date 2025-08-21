@@ -21,25 +21,15 @@ import { SyncModule } from './sync/sync.module';
         const isProduction = process.env.NODE_ENV === 'production';
         const databaseUrl = configService.get('DATABASE_URL');
         
-        // Parse DATABASE_URL if it exists
+        // Use DATABASE_URL directly - TLS is handled at process level
         if (databaseUrl) {
-          // Parse the URL to extract components
-          const url = new URL(databaseUrl);
-          
           return {
             type: 'postgres',
-            host: url.hostname,
-            port: parseInt(url.port) || 5432,
-            username: url.username,
-            password: url.password,
-            database: url.pathname.slice(1), // Remove leading slash
+            url: databaseUrl,
             autoLoadEntities: true,
             synchronize: false,
             logging: !isProduction,
-            // DigitalOcean requires SSL but uses self-signed cert
-            ssl: isProduction ? {
-              rejectUnauthorized: false
-            } : false,
+            ssl: isProduction, // Simple boolean for production
           };
         }
         
