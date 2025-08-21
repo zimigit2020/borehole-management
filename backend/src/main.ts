@@ -23,10 +23,15 @@ async function bootstrap() {
       // Allow requests with no origin (like mobile apps or Postman)
       if (!origin) return callback(null, true);
       
+      // Allow the deployed frontend
+      if (origin === 'https://borehole-frontend-xfjtz.ondigitalocean.app') {
+        return callback(null, true);
+      }
+      
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        // In production, also allow localhost:3000 for development
+        // In production, also allow localhost for development
         if (origin === 'http://localhost:3000' || origin === 'http://localhost:3001') {
           callback(null, true);
         } else {
