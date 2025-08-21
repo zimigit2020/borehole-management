@@ -23,18 +23,21 @@ import { SyncModule } from './sync/sync.module';
         
         // Parse DATABASE_URL if it exists
         if (databaseUrl) {
-          // Append sslmode if not present
-          const urlWithSSL = databaseUrl.includes('sslmode=') 
-            ? databaseUrl 
-            : `${databaseUrl}${databaseUrl.includes('?') ? '&' : '?'}sslmode=require`;
-          
           return {
             type: 'postgres',
-            url: urlWithSSL,
+            url: databaseUrl,
             autoLoadEntities: true,
             synchronize: false,
             logging: !isProduction,
-            ssl: false, // Let the URL parameter handle SSL
+            // DigitalOcean requires SSL but uses self-signed cert
+            ssl: isProduction ? {
+              rejectUnauthorized: false
+            } : false,
+            extra: isProduction ? {
+              ssl: {
+                rejectUnauthorized: false
+              }
+            } : {},
           };
         }
         
