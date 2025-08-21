@@ -57,6 +57,12 @@ class ApiService {
     return response.data;
   }
 
+  // PATCH request
+  async patch<T>(url: string, data?: any): Promise<T> {
+    const response = await this.api.patch<T>(url, data);
+    return response.data;
+  }
+
   // DELETE request
   async delete<T>(url: string): Promise<T> {
     const response = await this.api.delete<T>(url);
