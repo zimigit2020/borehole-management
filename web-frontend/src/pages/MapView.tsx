@@ -680,21 +680,22 @@ const MapView: React.FC = () => {
           }} />
         </Fab>
 
-        {/* Stats Overview - Improved Design */}
+        {/* Stats Overview - Centered Design */}
         <Paper
           elevation={3}
           sx={{
             position: 'absolute',
             bottom: 24,
-            left: drawerOpen ? 384 : 24,
+            left: '50%',
+            transform: 'translateX(-50%)',
             zIndex: 1000,
             transition: 'all 0.3s ease',
             background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(249,250,251,0.98) 100%)',
             backdropFilter: 'blur(12px)',
             borderRadius: 2,
             overflow: 'hidden',
-            minWidth: 420,
-            maxWidth: 480,
+            width: 480,
+            maxWidth: '90%',
           }}
         >
           <Box sx={{ p: 2.5 }}>
