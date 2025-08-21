@@ -69,6 +69,8 @@ import {
   Share,
   Edit,
   MoreVert,
+  Add,
+  FileDownload,
 } from '@mui/icons-material';
 import api from '../../services/api.service';
 import { API_ENDPOINTS } from '../../config/api';
@@ -170,8 +172,11 @@ const SurveyReports: React.FC = () => {
         recommendations: 'Driller is recommended to use a temporal casing to counteract collapsing formation(boulders). Driller advised to reach minimum and maximum depth unless adequate yield has been reached.',
         specialNotes: 'Site has good potential for water yield based on resistivity profiles',
         disclaimer: 'The results of this survey are based on observed geology and resistivity profiles. However on account of the erratic changes to constitutions of the surface and underground water bodies due to global climatic changes, borehole/well yield as a Function of rate of recharge, may adversely affect the high to moderate groundwater potential of the area indicated by profile results of the survey.',
-        resistivityGraphUrl: '/sample-graph.png',
-        sitePhotos: ['/site1.jpg', '/site2.jpg'],
+        resistivityGraphUrl: 'https://via.placeholder.com/600x400/4CAF50/FFFFFF?text=Resistivity+Graph',
+        sitePhotos: [
+          'https://via.placeholder.com/400x300/2196F3/FFFFFF?text=Site+Photo+1',
+          'https://via.placeholder.com/400x300/FF9800/FFFFFF?text=Site+Photo+2'
+        ],
         status: 'pending',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -199,8 +204,12 @@ const SurveyReports: React.FC = () => {
         updatedAt: new Date(Date.now() - 86400000).toISOString(),
         approvedBy: 'Admin',
         approvedAt: new Date(Date.now() - 43200000).toISOString(),
-        resistivityGraphUrl: '/sample-graph2.png',
-        sitePhotos: ['/site3.jpg', '/site4.jpg', '/site5.jpg'],
+        resistivityGraphUrl: 'https://via.placeholder.com/600x400/9C27B0/FFFFFF?text=Resistivity+Graph+2',
+        sitePhotos: [
+          'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Site+Photo+3',
+          'https://via.placeholder.com/400x300/E91E63/FFFFFF?text=Site+Photo+4',
+          'https://via.placeholder.com/400x300/00BCD4/FFFFFF?text=Site+Photo+5'
+        ],
         syncedAt: new Date().toISOString(),
       }
     ];
@@ -264,8 +273,110 @@ const SurveyReports: React.FC = () => {
   };
 
   const handleGeneratePDF = (report: SurveyReport) => {
-    // Generate PDF logic
-    console.log('Generating PDF for report:', report.id);
+    // Create a simple HTML representation and open in new window for printing
+    const pdfWindow = window.open('', '_blank');
+    if (pdfWindow) {
+      pdfWindow.document.write(`
+        <html>
+          <head>
+            <title>Survey Report - ${report.siteName}</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; }
+              h1 { color: #2E7D32; }
+              h2 { color: #333; margin-top: 30px; }
+              .section { margin-bottom: 20px; }
+              .label { font-weight: bold; }
+              .water-breaks { display: flex; gap: 10px; margin: 10px 0; }
+              .water-break { background: #E3F2FD; padding: 5px 10px; border-radius: 5px; }
+              .recommendation { background: #FFF3E0; padding: 15px; border-radius: 5px; margin: 10px 0; }
+              .disclaimer { background: #FFEBEE; padding: 15px; border-radius: 5px; margin: 10px 0; }
+            </style>
+          </head>
+          <body>
+            <h1>Geological Survey Report</h1>
+            
+            <div class="section">
+              <h2>Location</h2>
+              <table>
+                <tr><td class="label">Site Name:</td><td>${report.siteName}</td></tr>
+                <tr><td class="label">Constituency:</td><td>${report.constituency}</td></tr>
+                <tr><td class="label">Ward:</td><td>${report.ward}</td></tr>
+                <tr><td class="label">Coordinates:</td><td>${report.latitude}, ${report.longitude}</td></tr>
+                <tr><td class="label">Contact Person:</td><td>${report.contactPerson || 'N/A'}</td></tr>
+              </table>
+            </div>
+            
+            <div class="section">
+              <h2>Geology</h2>
+              <p>${report.geology}</p>
+            </div>
+            
+            <div class="section">
+              <h2>Survey Method</h2>
+              <p>${report.surveyMethod}</p>
+            </div>
+            
+            <div class="section">
+              <h2>Results</h2>
+              <p><span class="label">Minimum Drilling Depth:</span> ${report.minDrillingDepth}m</p>
+              <p><span class="label">Maximum Drilling Depth:</span> ${report.maxDrillingDepth}m</p>
+              <p><span class="label">Expected Water Breaks:</span></p>
+              <div class="water-breaks">
+                ${report.expectedWaterBreaks.map(depth => `<span class="water-break">${depth}m</span>`).join('')}
+              </div>
+            </div>
+            
+            <div class="section recommendation">
+              <h2>Recommendations</h2>
+              <p>${report.recommendations}</p>
+            </div>
+            
+            ${report.disclaimer ? `
+              <div class="section disclaimer">
+                <h2>Disclaimer</h2>
+                <p>${report.disclaimer}</p>
+              </div>
+            ` : ''}
+            
+            <div class="section">
+              <p><small>Report generated on ${new Date().toLocaleDateString()}</small></p>
+            </div>
+          </body>
+        </html>
+      `);
+      pdfWindow.document.close();
+      setTimeout(() => {
+        pdfWindow.print();
+      }, 500);
+    }
+  };
+
+  const handleExportCSV = () => {
+    // Convert reports to CSV format
+    const headers = ['Site Name', 'Constituency', 'Ward', 'Latitude', 'Longitude', 'Min Depth', 'Max Depth', 'Status', 'Surveyor', 'Date'];
+    const csvData = filteredReports.map(report => [
+      report.siteName,
+      report.constituency,
+      report.ward,
+      report.latitude,
+      report.longitude,
+      report.minDrillingDepth,
+      report.maxDrillingDepth,
+      report.status,
+      report.surveyorName,
+      new Date(report.createdAt).toLocaleDateString()
+    ]);
+    
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `survey_reports_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
   };
 
   const handleImageClick = (imageUrl: string) => {
@@ -306,12 +417,22 @@ const SurveyReports: React.FC = () => {
     <Box sx={{ p: 3 }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-          Survey Reports
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Review and manage geological survey reports from field teams
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+          <Box>
+            <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+              Survey Reports
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Review and manage geological survey reports from field teams
+            </Typography>
+          </Box>
+          <Alert severity="info" sx={{ maxWidth: 400 }}>
+            <Typography variant="body2">
+              <strong>Note:</strong> New surveys are created from the mobile app by field surveyors. 
+              Surveys appear here after syncing from the field.
+            </Typography>
+          </Alert>
+        </Box>
       </Box>
 
       {/* Statistics Cards */}
@@ -453,9 +574,10 @@ const SurveyReports: React.FC = () => {
               <Button
                 fullWidth
                 variant="outlined"
-                startIcon={<Download />}
+                startIcon={<FileDownload />}
+                onClick={handleExportCSV}
               >
-                Export
+                Export CSV
               </Button>
             </Grid>
           </Grid>
