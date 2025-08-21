@@ -714,7 +714,7 @@ const MapView: React.FC = () => {
             </Typography>
             
             <Grid container spacing={2}>
-              <Grid item xs={3}>
+              <Grid size={3}>
                 <Box 
                   sx={{ 
                     textAlign: 'center',
@@ -733,7 +733,7 @@ const MapView: React.FC = () => {
                 </Box>
               </Grid>
               
-              <Grid item xs={3}>
+              <Grid size={3}>
                 <Box 
                   sx={{ 
                     textAlign: 'center',
@@ -752,7 +752,7 @@ const MapView: React.FC = () => {
                 </Box>
               </Grid>
               
-              <Grid item xs={3}>
+              <Grid size={3}>
                 <Box 
                   sx={{ 
                     textAlign: 'center',
@@ -771,7 +771,7 @@ const MapView: React.FC = () => {
                 </Box>
               </Grid>
               
-              <Grid item xs={3}>
+              <Grid size={3}>
                 <Box 
                   sx={{ 
                     textAlign: 'center',
