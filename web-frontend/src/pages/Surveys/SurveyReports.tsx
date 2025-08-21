@@ -72,8 +72,7 @@ import {
   Add,
   FileDownload,
 } from '@mui/icons-material';
-import api from '../../services/api.service';
-import { API_ENDPOINTS } from '../../config/api';
+import surveysService from '../../services/surveys.service';
 
 interface SurveyReport {
   id: string;

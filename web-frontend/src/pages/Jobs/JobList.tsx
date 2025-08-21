@@ -17,6 +17,8 @@ import {
   TextField,
   InputAdornment,
   Tooltip,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import {
   Add,
@@ -27,28 +29,13 @@ import {
   LocationOn,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
-import api from '../../services/api.service';
-import { API_ENDPOINTS } from '../../config/api';
-
-interface Job {
-  id: string;
-  name: string;
-  clientName: string;
-  siteName: string;
-  latitude: number;
-  longitude: number;
-  status: string;
-  priority: string;
-  budgetUsd: number;
-  createdAt: string;
-  assignedSurveyor?: any;
-  assignedDriller?: any;
-}
+import jobsService, { Job } from '../../services/jobs.service';
 
 const JobList: React.FC = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,10 +47,30 @@ const JobList: React.FC = () => {
   const fetchJobs = async () => {
     try {
       setLoading(true);
-      const data = await api.get<Job[]>(API_ENDPOINTS.JOBS);
+      setError(null);
+      const data = await jobsService.getAllJobs();
       setJobs(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch jobs:', error);
+      setError(error.response?.data?.message || 'Failed to load jobs. Please try again.');
+      // Use mock data as fallback for now
+      setJobs([
+        {
+          id: '1',
+          name: 'Venice Borehole Project',
+          clientName: 'Venice Community Trust',
+          siteName: 'Venice Site A',
+          latitude: -17.8292,
+          longitude: 31.0536,
+          contactPerson: 'John Doe',
+          contactPhone: '+263 77 123 4567',
+          priority: 'high',
+          budgetUsd: 5000,
+          status: 'pending',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+      ]);
     } finally {
       setLoading(false);
     }
@@ -132,6 +139,12 @@ const JobList: React.FC = () => {
         </Box>
       </Box>
 
+      {error && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
       <Paper sx={{ mb: 2, p: 2 }}>
         <TextField
           fullWidth
@@ -149,6 +162,12 @@ const JobList: React.FC = () => {
         />
       </Paper>
 
+      {loading ? (
+        <Paper sx={{ p: 4, textAlign: 'center' }}>
+          <CircularProgress />
+          <Typography sx={{ mt: 2 }}>Loading jobs...</Typography>
+        </Paper>
+      ) : (
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -247,6 +266,7 @@ const JobList: React.FC = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
+      )}
     </Box>
   );
 };
