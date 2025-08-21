@@ -109,7 +109,7 @@ interface Payment {
   clientName: string;
   amount: number;
   paymentDate: string;
-  paymentMethod: 'cash' | 'bank_transfer' | 'mobile_money' | 'cheque';
+  paymentMethod: 'cash' | 'bank_transfer';
   reference: string;
   notes?: string;
 }
@@ -241,8 +241,8 @@ const FinanceManagement: React.FC = () => {
         clientName: 'Chivhu Primary School',
         amount: 4946.25,
         paymentDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
-        paymentMethod: 'cheque',
-        reference: 'CHQ0012345',
+        paymentMethod: 'bank_transfer',
+        reference: 'TRF2024002',
       },
     ];
 
@@ -278,8 +278,8 @@ const FinanceManagement: React.FC = () => {
         amount: 450,
         date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
         vendor: 'Workforce Solutions',
-        paymentMethod: 'mobile_money',
-        reference: 'MM2024001',
+        paymentMethod: 'cash',
+        reference: 'CASH2024001',
         jobId: 'JOB002',
         status: 'approved',
         approvedBy: 'Sarah Admin',
