@@ -1,0 +1,54 @@
+name: borehole-management
+region: fra
+services:
+- build_command: npm run build
+  environment_slug: node-js
+  github:
+    branch: master
+    deploy_on_push: true
+    repo: zimigit2020/borehole-management
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: professional-xs
+  name: backend
+  routes:
+  - path: /
+  run_command: node dist/main
+  source_dir: /backend
+  envs:
+  - key: NODE_ENV
+    scope: RUN_AND_BUILD_TIME
+    value: production
+  - key: PORT
+    scope: RUN_AND_BUILD_TIME
+    value: "8080"
+  - key: API_PREFIX
+    scope: RUN_AND_BUILD_TIME
+    value: api/v1
+  - key: DATABASE_URL
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: JWT_SECRET
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: JWT_EXPIRES_IN
+    scope: RUN_AND_BUILD_TIME
+    value: 24h
+  - key: DO_SPACES_ENDPOINT
+    scope: RUN_AND_BUILD_TIME
+    value: https://fra1.digitaloceanspaces.com
+  - key: DO_SPACES_KEY
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: DO_SPACES_SECRET
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: DO_SPACES_BUCKET
+    scope: RUN_AND_BUILD_TIME
+    value: borehole-files
+  - key: DO_SPACES_REGION
+    scope: RUN_AND_BUILD_TIME
+    value: fra1
+  - key: CORS_ORIGIN
+    scope: RUN_AND_BUILD_TIME
+    value: "*"

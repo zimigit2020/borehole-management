@@ -1,0 +1,17 @@
+name: borehole-management
+region: fra
+services:
+- name: backend
+  build_command: npm run build
+  environment_slug: node-js
+  github:
+    branch: master
+    deploy_on_push: true
+    repo: zimigit2020/borehole-management
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  routes:
+  - path: /
+  run_command: node dist/main
+  source_dir: /backend
