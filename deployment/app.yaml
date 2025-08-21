@@ -1,0 +1,46 @@
+name: borehole-management
+region: fra
+services:
+- name: backend
+  dockerfile_path: backend/Dockerfile
+  source_dir: /
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: your-github-username/borehole-management
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  routes:
+  - path: /api
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: DATABASE_URL
+    scope: RUN_TIME
+    type: SECRET
+  - key: JWT_SECRET
+    scope: RUN_TIME
+    type: SECRET
+  - key: DO_SPACES_KEY
+    scope: RUN_TIME
+    type: SECRET
+  - key: DO_SPACES_SECRET
+    scope: RUN_TIME
+    type: SECRET
+  - key: DO_SPACES_ENDPOINT
+    value: https://fra1.digitaloceanspaces.com
+  - key: DO_SPACES_BUCKET
+    value: borehole-files
+  - key: DO_SPACES_REGION
+    value: fra1
+  - key: CORS_ORIGIN
+    value: https://your-app-domain.com
+  health_check:
+    http_path: /api/v1/health
+databases:
+- engine: PG
+  name: borehole-db
+  num_nodes: 1
+  size: db-s-dev-database
+  version: "15"

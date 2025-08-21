@@ -1,0 +1,48 @@
+name: borehole-management
+region: fra
+services:
+- name: backend
+  build_command: npm run build
+  environment_slug: node-js
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: YOUR_GITHUB_USERNAME/borehole-phase1
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  routes:
+  - path: /
+  run_command: node dist/main
+  source_dir: /backend
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: PORT
+    value: "8080"
+  - key: API_PREFIX
+    value: api/v1
+  - key: DATABASE_URL
+    value: YOUR_DATABASE_URL_HERE
+  - key: JWT_SECRET
+    scope: RUN_TIME
+    type: SECRET
+    value: change-this-to-secure-random-string-minimum-32-characters
+  - key: JWT_EXPIRES_IN
+    value: 24h
+  - key: DO_SPACES_ENDPOINT
+    value: https://fra1.digitaloceanspaces.com
+  - key: DO_SPACES_KEY
+    scope: RUN_TIME
+    type: SECRET
+    value: YOUR_SPACES_ACCESS_KEY
+  - key: DO_SPACES_SECRET
+    scope: RUN_TIME
+    type: SECRET
+    value: YOUR_SPACES_SECRET_KEY
+  - key: DO_SPACES_BUCKET
+    value: borehole-files
+  - key: DO_SPACES_REGION
+    value: fra1
+  - key: CORS_ORIGIN
+    value: "*"
