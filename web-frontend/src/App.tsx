@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import JobList from './pages/Jobs/JobList';
 import MapView from './pages/MapView';
 import UserManagement from './pages/Users/UserManagement';
+import SurveyReports from './pages/Surveys/SurveyReports';
 
 const theme = createTheme({
   palette: {
@@ -112,7 +113,7 @@ function App() {
               <Route path="jobs" element={<JobList />} />
               <Route path="map" element={<MapView />} />
               <Route path="users" element={<UserManagement />} />
-              <Route path="surveys" element={<div>Survey Reports (Coming Soon)</div>} />
+              <Route path="surveys" element={<SurveyReports />} />
               <Route path="reports" element={<div>Analytics (Coming Soon)</div>} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
