@@ -21,18 +21,34 @@ import { SyncModule } from './sync/sync.module';
         const isProduction = process.env.NODE_ENV === 'production';
         const databaseUrl = configService.get('DATABASE_URL');
         
-        // For DigitalOcean, we need to append SSL params to the URL
-        const finalUrl = isProduction && databaseUrl && !databaseUrl.includes('sslmode=') 
-          ? `${databaseUrl}?sslmode=require`
-          : databaseUrl;
+        // Parse DATABASE_URL if it exists
+        if (databaseUrl) {
+          // Append sslmode if not present
+          const urlWithSSL = databaseUrl.includes('sslmode=') 
+            ? databaseUrl 
+            : `${databaseUrl}${databaseUrl.includes('?') ? '&' : '?'}sslmode=require`;
+          
+          return {
+            type: 'postgres',
+            url: urlWithSSL,
+            autoLoadEntities: true,
+            synchronize: false,
+            logging: !isProduction,
+            ssl: false, // Let the URL parameter handle SSL
+          };
+        }
         
+        // Fallback configuration
         return {
           type: 'postgres',
-          url: finalUrl,
+          host: configService.get('DB_HOST', 'localhost'),
+          port: configService.get('DB_PORT', 5432),
+          username: configService.get('DB_USERNAME', 'postgres'),
+          password: configService.get('DB_PASSWORD', 'postgres'),
+          database: configService.get('DB_NAME', 'borehole'),
           autoLoadEntities: true,
-          synchronize: false, // Never auto-sync in production
+          synchronize: false,
           logging: !isProduction,
-          ssl: isProduction ? { rejectUnauthorized: false } : false,
         };
       },
       inject: [ConfigService],
