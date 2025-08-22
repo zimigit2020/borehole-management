@@ -28,7 +28,7 @@ import { DrillingReportsModule } from './drilling-reports/drilling-reports.modul
             type: 'postgres',
             url: databaseUrl,
             autoLoadEntities: true,
-            synchronize: false,
+            synchronize: true, // Temporarily enable to sync schema
             logging: !isProduction,
             ssl: isProduction, // Simple boolean for production
           };
@@ -43,7 +43,7 @@ import { DrillingReportsModule } from './drilling-reports/drilling-reports.modul
           password: configService.get('DB_PASSWORD', 'postgres'),
           database: configService.get('DB_NAME', 'borehole'),
           autoLoadEntities: true,
-          synchronize: false,
+          synchronize: true, // Temporarily enable to sync schema
           logging: !isProduction,
         };
       },

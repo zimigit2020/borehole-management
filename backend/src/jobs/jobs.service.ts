@@ -22,18 +22,37 @@ export class JobsService {
 
   async findAll(surveyorId?: string): Promise<Job[]> {
     try {
-      const query = this.jobsRepository.createQueryBuilder('job')
-        .leftJoinAndSelect('job.assignedSurveyor', 'surveyor')
-        .leftJoinAndSelect('job.assignedDriller', 'driller');
+      const query = this.jobsRepository.createQueryBuilder('job');
 
+      // Only join relations if they exist
       if (surveyorId) {
         query.where('job.assignedSurveyorId = :surveyorId', { surveyorId });
       }
 
-      return query.getMany();
+      const jobs = await query.getMany();
+      
+      // Try to load relations separately for each job
+      for (const job of jobs) {
+        if (job.assignedSurveyorId) {
+          try {
+            job.assignedSurveyor = await this.usersService.findOne(job.assignedSurveyorId);
+          } catch (e) {
+            // User doesn't exist, continue without it
+          }
+        }
+        if (job.assignedDrillerId) {
+          try {
+            job.assignedDriller = await this.usersService.findOne(job.assignedDrillerId);
+          } catch (e) {
+            // User doesn't exist, continue without it
+          }
+        }
+      }
+
+      return jobs;
     } catch (error) {
-      // If relations fail, return jobs without relations
-      console.error('Error loading job relations:', error);
+      console.error('Error loading jobs:', error);
+      // Return basic jobs without any relations
       return this.jobsRepository.find();
     }
   }
@@ -42,22 +61,36 @@ export class JobsService {
     try {
       const job = await this.jobsRepository.findOne({
         where: { id },
-        relations: ['assignedSurveyor', 'assignedDriller'],
       });
+      
       if (!job) {
         throw new NotFoundException('Job not found');
       }
+
+      // Try to load relations if IDs exist
+      if (job.assignedSurveyorId) {
+        try {
+          job.assignedSurveyor = await this.usersService.findOne(job.assignedSurveyorId);
+        } catch (e) {
+          // User doesn't exist, continue without it
+        }
+      }
+      
+      if (job.assignedDrillerId) {
+        try {
+          job.assignedDriller = await this.usersService.findOne(job.assignedDrillerId);
+        } catch (e) {
+          // User doesn't exist, continue without it
+        }
+      }
+
       return job;
     } catch (error) {
-      // Try without relations if they fail
-      console.error('Error loading job with relations:', error);
-      const job = await this.jobsRepository.findOne({
-        where: { id },
-      });
-      if (!job) {
-        throw new NotFoundException('Job not found');
+      if (error instanceof NotFoundException) {
+        throw error;
       }
-      return job;
+      console.error('Error loading job:', error);
+      throw new BadRequestException('Failed to load job');
     }
   }
 
@@ -122,7 +155,6 @@ export class JobsService {
   async getAssignedJobs(surveyorId: string): Promise<Job[]> {
     return this.jobsRepository.find({
       where: { assignedSurveyorId: surveyorId },
-      relations: ['assignedSurveyor'],
     });
   }
 
