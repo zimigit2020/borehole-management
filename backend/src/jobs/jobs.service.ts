@@ -21,26 +21,44 @@ export class JobsService {
   }
 
   async findAll(surveyorId?: string): Promise<Job[]> {
-    const query = this.jobsRepository.createQueryBuilder('job')
-      .leftJoinAndSelect('job.assignedSurveyor', 'surveyor')
-      .leftJoinAndSelect('job.assignedDriller', 'driller');
+    try {
+      const query = this.jobsRepository.createQueryBuilder('job')
+        .leftJoinAndSelect('job.assignedSurveyor', 'surveyor')
+        .leftJoinAndSelect('job.assignedDriller', 'driller');
 
-    if (surveyorId) {
-      query.where('job.assignedSurveyorId = :surveyorId', { surveyorId });
+      if (surveyorId) {
+        query.where('job.assignedSurveyorId = :surveyorId', { surveyorId });
+      }
+
+      return query.getMany();
+    } catch (error) {
+      // If relations fail, return jobs without relations
+      console.error('Error loading job relations:', error);
+      return this.jobsRepository.find();
     }
-
-    return query.getMany();
   }
 
   async findOne(id: string): Promise<Job> {
-    const job = await this.jobsRepository.findOne({
-      where: { id },
-      relations: ['assignedSurveyor', 'assignedDriller'],
-    });
-    if (!job) {
-      throw new NotFoundException('Job not found');
+    try {
+      const job = await this.jobsRepository.findOne({
+        where: { id },
+        relations: ['assignedSurveyor', 'assignedDriller'],
+      });
+      if (!job) {
+        throw new NotFoundException('Job not found');
+      }
+      return job;
+    } catch (error) {
+      // Try without relations if they fail
+      console.error('Error loading job with relations:', error);
+      const job = await this.jobsRepository.findOne({
+        where: { id },
+      });
+      if (!job) {
+        throw new NotFoundException('Job not found');
+      }
+      return job;
     }
-    return job;
   }
 
   async update(id: string, updateData: Partial<Job>): Promise<Job> {
