@@ -8,16 +8,43 @@ export interface Job {
   siteName: string;
   latitude: number;
   longitude: number;
-  contactPerson: string;
-  contactPhone: string;
-  priority: 'low' | 'medium' | 'high';
-  budgetUsd: number;
-  status: 'pending' | 'surveyed' | 'drilling' | 'completed' | 'dry_hole';
+  contactPerson?: string;
+  contactPhone?: string;
+  priority?: string;
+  budgetUsd?: number;
+  status: string;
+  assignedSurveyor?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
   assignedSurveyorId?: string;
+  assignedDriller?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
   assignedDrillerId?: string;
-  surveyDate?: string;
-  drillingDate?: string;
-  completionDate?: string;
+  assignedAt?: string;
+  surveyCompletedAt?: string;
+  drillingStartedAt?: string;
+  drillingCompletedAt?: string;
+  drillingResults?: {
+    finalDepth?: number;
+    waterYield?: number;
+    isSuccessful?: boolean;
+    completedAt?: string;
+    completedBy?: string;
+  };
+  surveyResults?: {
+    recommendedDepth?: number;
+    soilType?: string;
+    waterTableDepth?: number;
+    notes?: string;
+  };
+  accessNotes?: string;
   notes?: string;
   createdAt: string;
   updatedAt: string;
