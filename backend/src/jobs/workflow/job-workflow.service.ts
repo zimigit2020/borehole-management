@@ -133,18 +133,6 @@ export class JobWorkflowService {
     }
 
     job.status = JobStatus.COMPLETED;
-    
-    // Store drilling results in a JSON column (we'll add this to entity)
-    const drillingResults = {
-      finalDepth: completeDto.finalDepth,
-      waterYield: completeDto.waterYield,
-      isSuccessful: completeDto.isSuccessful,
-      completedAt: new Date(),
-      completedBy: currentUser.id,
-    };
-
-    // @ts-ignore - We'll add this column to the entity
-    job.drillingResults = drillingResults;
 
     const historyNote = `Drilling completed. Depth: ${completeDto.finalDepth}m, Yield: ${completeDto.waterYield}L/hr, Success: ${completeDto.isSuccessful ? 'Yes' : 'No'}. ${completeDto.notes || ''}`;
     await this.saveJobHistory(job, JobStatus.DRILLING, JobStatus.COMPLETED, currentUser, historyNote);

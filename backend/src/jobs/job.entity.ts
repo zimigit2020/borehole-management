@@ -67,29 +67,6 @@ export class Job {
   @Column({ nullable: true })
   surveyCompletedAt: Date;
 
-  @Column({ nullable: true })
-  drillingStartedAt: Date;
-
-  @Column({ nullable: true })
-  drillingCompletedAt: Date;
-
-  @Column('json', { nullable: true })
-  drillingResults: {
-    finalDepth?: number;
-    waterYield?: number;
-    isSuccessful?: boolean;
-    completedAt?: Date;
-    completedBy?: string;
-  };
-
-  @Column('json', { nullable: true })
-  surveyResults: {
-    recommendedDepth?: number;
-    soilType?: string;
-    waterTableDepth?: number;
-    notes?: string;
-  };
-
   @CreateDateColumn()
   createdAt: Date;
 
