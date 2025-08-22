@@ -8,6 +8,7 @@ import { JobsModule } from './jobs/jobs.module';
 import { SurveysModule } from './surveys/surveys.module';
 import { FilesModule } from './files/files.module';
 import { SyncModule } from './sync/sync.module';
+import { DrillingReportsModule } from './drilling-reports/drilling-reports.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { SyncModule } from './sync/sync.module';
     SurveysModule,
     FilesModule,
     SyncModule,
+    DrillingReportsModule,
   ],
   controllers: [AppController],
 })
