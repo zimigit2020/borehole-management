@@ -226,7 +226,7 @@ const Login: React.FC = () => {
                 Demo Credentials
               </Typography>
               <Typography variant="body2" align="center" sx={{ fontFamily: 'monospace' }}>
-                test@borehole.com / test123
+                admin@borehole.com / admin123
               </Typography>
             </Box>
 
