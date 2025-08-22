@@ -9,6 +9,7 @@ import { SurveysModule } from './surveys/surveys.module';
 import { FilesModule } from './files/files.module';
 import { SyncModule } from './sync/sync.module';
 import { DrillingReportsModule } from './drilling-reports/drilling-reports.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { DrillingReportsModule } from './drilling-reports/drilling-reports.modul
       },
       inject: [ConfigService],
     }),
+    DatabaseModule, // Load this first to run migrations
     AuthModule,
     UsersModule,
     JobsModule,

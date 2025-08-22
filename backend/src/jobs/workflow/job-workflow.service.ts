@@ -111,6 +111,7 @@ export class JobWorkflowService {
     job.assignedDriller = driller;
     job.assignedDrillerId = driller.id;
     job.status = JobStatus.DRILLING;
+    job.drillingStartedAt = new Date();
 
     await this.saveJobHistory(job, JobStatus.SURVEYED, JobStatus.DRILLING, currentUser, `Assigned to driller: ${driller.firstName} ${driller.lastName}. ${assignDto.notes || ''}`);
     
@@ -133,6 +134,16 @@ export class JobWorkflowService {
     }
 
     job.status = JobStatus.COMPLETED;
+    job.drillingCompletedAt = new Date();
+    
+    // Store drilling results
+    job.drillingResults = {
+      finalDepth: completeDto.finalDepth,
+      waterYield: completeDto.waterYield,
+      isSuccessful: completeDto.isSuccessful,
+      completedAt: new Date(),
+      completedBy: currentUser.id,
+    };
 
     const historyNote = `Drilling completed. Depth: ${completeDto.finalDepth}m, Yield: ${completeDto.waterYield}L/hr, Success: ${completeDto.isSuccessful ? 'Yes' : 'No'}. ${completeDto.notes || ''}`;
     await this.saveJobHistory(job, JobStatus.DRILLING, JobStatus.COMPLETED, currentUser, historyNote);
