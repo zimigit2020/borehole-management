@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
 import { Job } from './job.entity';
 import { JobsService } from './jobs.service';
+import { JobWorkflowService } from './workflow/job-workflow.service';
 import { JobsController } from './jobs.controller';
 import { UsersModule } from '../users/users.module';
 import { memoryStorage } from 'multer';
@@ -24,7 +25,7 @@ import { memoryStorage } from 'multer';
     }),
   ],
   controllers: [JobsController],
-  providers: [JobsService],
-  exports: [JobsService],
+  providers: [JobsService, JobWorkflowService],
+  exports: [JobsService, JobWorkflowService],
 })
 export class JobsModule {}
