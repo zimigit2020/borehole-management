@@ -28,6 +28,7 @@ import {
   Schedule,
   Engineering,
   Assignment,
+  Description,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import jobsService, { Job } from '../../services/jobs.service';
@@ -238,6 +239,21 @@ const JobDetail: React.FC = () => {
                 Workflow Actions
               </Typography>
               <JobWorkflowActions job={job} onUpdate={fetchJob} />
+              
+              {/* Drilling Report Button */}
+              {(job.status === 'drilling' || job.status === 'completed') && (
+                <Box mt={2}>
+                  <Divider sx={{ mb: 2 }} />
+                  <Button
+                    variant="outlined"
+                    startIcon={<Description />}
+                    onClick={() => navigate(`/drilling/report/${job.id}`)}
+                    fullWidth
+                  >
+                    {job.status === 'drilling' ? 'Create Drilling Report' : 'View/Edit Drilling Report'}
+                  </Button>
+                </Box>
+              )}
             </CardContent>
           </Card>
 
