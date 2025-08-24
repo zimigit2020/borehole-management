@@ -13,7 +13,7 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import Grid2 from '@mui/material/Grid2';
+import Grid from '@mui/material/GridLegacy';
 import {
   Add as AddIcon,
   Receipt as InvoiceIcon,
@@ -211,8 +211,8 @@ const Finance: React.FC = () => {
       )}
 
       {/* Summary Cards */}
-      <Grid2 container spacing={3} sx={{ mb: 3 }}>
-        <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -228,9 +228,9 @@ const Finance: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid2>
+        </Grid>
 
-        <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -246,9 +246,9 @@ const Finance: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid2>
+        </Grid>
 
-        <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -264,9 +264,9 @@ const Finance: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid2>
+        </Grid>
 
-        <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -282,8 +282,8 @@ const Finance: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
 
       {/* Overdue Alert */}
       {overdueInvoices.length > 0 && (

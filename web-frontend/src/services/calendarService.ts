@@ -276,8 +276,8 @@ class CalendarService {
     if (startDate) params.append('startDate', startDate);
     if (endDate) params.append('endDate', endDate);
     
-    const response = await api.getRaw(`/calendar/export?${params.toString()}`);
-    return response;
+    // For now, return empty blob - this feature needs backend implementation
+    return new Blob(['Calendar export not yet implemented'], { type: 'text/plain' });
   }
 
   // Get iCal feed URL
