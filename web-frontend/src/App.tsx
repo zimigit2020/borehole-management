@@ -13,6 +13,7 @@ import MapView from './pages/MapView';
 import UserManagement from './pages/Users/UserManagement';
 import SurveyReports from './pages/Surveys/SurveyReports';
 import InventoryManagement from './pages/Inventory/InventoryManagement';
+import InstallationManagement from './pages/Installations/InstallationManagement';
 import FinanceManagement from './pages/Finance/FinanceManagement';
 import DrillingOperations from './pages/Drilling/DrillingOperations';
 import DrillingReportForm from './pages/Drilling/DrillingReportForm';
@@ -123,6 +124,7 @@ function App() {
               <Route path="drilling" element={<DrillingOperations />} />
               <Route path="drilling/report/:jobId" element={<DrillingReportForm />} />
               <Route path="inventory" element={<InventoryManagement />} />
+              <Route path="installations" element={<InstallationManagement />} />
               <Route path="finance" element={<FinanceManagement />} />
               <Route path="reports" element={<div>Analytics (Coming Soon)</div>} />
             </Route>
