@@ -201,13 +201,14 @@ const Finance: React.FC = () => {
                   Create Invoice
                 </Button>
               )}
-              {activeTab === 1 && selectedInvoice && (
+              {/* Payments tab doesn't need a main action button - payments are recorded from invoice list */}
+              {activeTab === 2 && (
                 <Button
                   variant="contained"
-                  startIcon={<PaymentIcon />}
-                  onClick={() => handleRecordPayment(selectedInvoice)}
+                  startIcon={<ReportIcon />}
+                  onClick={() => window.print()}
                 >
-                  Record Payment
+                  Export Report
                 </Button>
               )}
             </>
