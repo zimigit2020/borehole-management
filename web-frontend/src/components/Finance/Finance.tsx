@@ -30,10 +30,12 @@ import financeService, { Invoice, FinancialSummary } from '../../services/financ
 import InvoiceList from './InvoiceList';
 import PaymentsList from './PaymentsList';
 import FinancialReports from './FinancialReports';
+import ExpensesList from './ExpensesList';
 import CreateInvoiceDialog from './CreateInvoiceDialog';
 import InvoiceDetailDialog from './InvoiceDetailDialog';
 import RecordPaymentDialog from './RecordPaymentDialog';
 import ExchangeRateDialog from './ExchangeRateDialog';
+import CreateExpenseDialog from './CreateExpenseDialog';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -68,6 +70,8 @@ const Finance: React.FC = () => {
   const [invoiceDetailOpen, setInvoiceDetailOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [exchangeRateDialogOpen, setExchangeRateDialogOpen] = useState(false);
+  const [createExpenseOpen, setCreateExpenseOpen] = useState(false);
+  const [selectedExpense, setSelectedExpense] = useState<any>(null);
 
   // Check if user has finance access (admin or project_manager)
   const hasFinanceAccess = user?.role === 'admin' || user?.role === 'project_manager';
@@ -201,8 +205,20 @@ const Finance: React.FC = () => {
                   Create Invoice
                 </Button>
               )}
-              {/* Payments tab doesn't need a main action button - payments are recorded from invoice list */}
               {activeTab === 2 && (
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => {
+                    setSelectedExpense(null);
+                    setCreateExpenseOpen(true);
+                  }}
+                >
+                  Add Expense
+                </Button>
+              )}
+              {/* Payments tab doesn't need a main action button - payments are recorded from invoice list */}
+              {activeTab === 3 && (
                 <Button
                   variant="contained"
                   startIcon={<ReportIcon />}
@@ -324,6 +340,7 @@ const Finance: React.FC = () => {
         <Tabs value={activeTab} onChange={handleTabChange}>
           <Tab label="Invoices" icon={<InvoiceIcon />} iconPosition="start" />
           <Tab label="Payments" icon={<PaymentIcon />} iconPosition="start" />
+          <Tab label="Expenses" icon={<MoneyIcon />} iconPosition="start" />
           <Tab label="Reports" icon={<ReportIcon />} iconPosition="start" />
         </Tabs>
 
@@ -341,6 +358,32 @@ const Finance: React.FC = () => {
         </TabPanel>
 
         <TabPanel value={activeTab} index={2}>
+          <ExpensesList
+            onEdit={(expense) => {
+              setSelectedExpense(expense);
+              setCreateExpenseOpen(true);
+            }}
+            onDelete={async (id) => {
+              if (window.confirm('Are you sure you want to delete this expense?')) {
+                try {
+                  const token = localStorage.getItem('token');
+                  await fetch(`${process.env.REACT_APP_API_URL}/finance/expenses/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  });
+                  loadFinancialData();
+                } catch (error) {
+                  console.error('Error deleting expense:', error);
+                }
+              }
+            }}
+            userRole={user?.role}
+          />
+        </TabPanel>
+
+        <TabPanel value={activeTab} index={3}>
           <FinancialReports />
         </TabPanel>
       </Paper>
@@ -355,6 +398,16 @@ const Finance: React.FC = () => {
       <ExchangeRateDialog
         open={exchangeRateDialogOpen}
         onClose={() => setExchangeRateDialogOpen(false)}
+      />
+
+      <CreateExpenseDialog
+        open={createExpenseOpen}
+        onClose={() => {
+          setCreateExpenseOpen(false);
+          setSelectedExpense(null);
+        }}
+        onSuccess={loadFinancialData}
+        expense={selectedExpense}
       />
 
       {selectedInvoice && (
