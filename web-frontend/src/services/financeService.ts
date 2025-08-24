@@ -108,6 +108,53 @@ export interface FinancialSummary {
   overdueInvoices: number;
 }
 
+export enum SupportedCurrency {
+  USD = 'USD',
+  ZAR = 'ZAR',
+  ZWG = 'ZWG',
+}
+
+export interface ExchangeRate {
+  id: string;
+  fromCurrency: string;
+  toCurrency: string;
+  rate: number;
+  effectiveDate: string;
+  isActive: boolean;
+  notes?: string;
+  updatedBy?: any;
+  updatedById: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateExchangeRateDto {
+  fromCurrency: SupportedCurrency;
+  toCurrency: SupportedCurrency;
+  rate: number;
+  effectiveDate: string;
+  notes?: string;
+}
+
+export interface UpdateExchangeRateDto {
+  rate: number;
+  notes?: string;
+}
+
+export interface ConvertCurrencyDto {
+  amount: number;
+  fromCurrency: SupportedCurrency;
+  toCurrency: SupportedCurrency;
+}
+
+export interface CurrencyConversion {
+  originalAmount: number;
+  convertedAmount: number;
+  rate: number;
+  fromCurrency: string;
+  toCurrency: string;
+}
+
 class FinanceService {
   // Invoices
   async getInvoices(filters?: {
@@ -186,6 +233,27 @@ class FinanceService {
 
   async updateOverdueStatuses(): Promise<void> {
     await api.post('/finance/maintenance/update-overdue', {});
+  }
+
+  // Exchange Rates
+  async createExchangeRate(data: CreateExchangeRateDto): Promise<ExchangeRate> {
+    return api.post<ExchangeRate>('/finance/exchange-rates', data);
+  }
+
+  async updateExchangeRate(from: string, to: string, data: UpdateExchangeRateDto): Promise<ExchangeRate> {
+    return api.put<ExchangeRate>(`/finance/exchange-rates/${from}/${to}`, data);
+  }
+
+  async getExchangeRates(activeOnly = true): Promise<ExchangeRate[]> {
+    return api.get<ExchangeRate[]>(`/finance/exchange-rates?activeOnly=${activeOnly}`);
+  }
+
+  async getExchangeRate(from: string, to: string): Promise<ExchangeRate> {
+    return api.get<ExchangeRate>(`/finance/exchange-rates/${from}/${to}`);
+  }
+
+  async convertCurrency(data: ConvertCurrencyDto): Promise<CurrencyConversion> {
+    return api.post<CurrencyConversion>('/finance/exchange-rates/convert', data);
   }
 }
 

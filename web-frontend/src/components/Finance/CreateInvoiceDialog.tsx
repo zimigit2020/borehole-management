@@ -25,7 +25,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { addDays } from 'date-fns';
-import financeService, { CreateInvoiceDto, InvoiceItem } from '../../services/financeService';
+import financeService, { CreateInvoiceDto, InvoiceItem, SupportedCurrency } from '../../services/financeService';
 import jobsService, { Job } from '../../services/jobsService';
 
 interface CreateInvoiceDialogProps {
@@ -57,7 +57,7 @@ const CreateInvoiceDialog: React.FC<CreateInvoiceDialogProps> = ({
     ],
     taxRate: 0,
     discountAmount: 0,
-    currency: 'USD',
+    currency: SupportedCurrency.USD,
     paymentTerms: 'Net 30',
     notes: '',
   });
@@ -326,8 +326,24 @@ const CreateInvoiceDialog: React.FC<CreateInvoiceDialogProps> = ({
             </Button>
           </Grid>
 
+          {/* Currency Selection */}
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <FormControl fullWidth required>
+              <InputLabel>Currency</InputLabel>
+              <Select
+                value={formData.currency}
+                onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                label="Currency"
+              >
+                <MenuItem value={SupportedCurrency.USD}>USD - US Dollar</MenuItem>
+                <MenuItem value={SupportedCurrency.ZAR}>ZAR - South African Rand</MenuItem>
+                <MenuItem value={SupportedCurrency.ZWG}>ZWG - Zimbabwe Gold</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
           {/* Tax & Discount */}
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <TextField
               fullWidth
               label="Tax Rate (%)"
@@ -336,7 +352,7 @@ const CreateInvoiceDialog: React.FC<CreateInvoiceDialogProps> = ({
               onChange={(e) => setFormData({ ...formData, taxRate: parseFloat(e.target.value) || 0 })}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <TextField
               fullWidth
               label="Discount Amount"
@@ -361,13 +377,33 @@ const CreateInvoiceDialog: React.FC<CreateInvoiceDialogProps> = ({
           {/* Totals */}
           <Grid size={12}>
             <Box sx={{ mt: 2, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
-              <Typography variant="body2">Subtotal: ${subtotal.toFixed(2)}</Typography>
-              <Typography variant="body2">Tax: ${taxAmount.toFixed(2)}</Typography>
+              <Typography variant="body2">
+                Subtotal: {new Intl.NumberFormat('en-US', { 
+                  style: 'currency', 
+                  currency: formData.currency || SupportedCurrency.USD 
+                }).format(subtotal)}
+              </Typography>
+              <Typography variant="body2">
+                Tax: {new Intl.NumberFormat('en-US', { 
+                  style: 'currency', 
+                  currency: formData.currency || SupportedCurrency.USD 
+                }).format(taxAmount)}
+              </Typography>
               {(formData.discountAmount || 0) > 0 && (
-                <Typography variant="body2">Discount: -${(formData.discountAmount || 0).toFixed(2)}</Typography>
+                <Typography variant="body2">
+                  Discount: -{new Intl.NumberFormat('en-US', { 
+                    style: 'currency', 
+                    currency: formData.currency || SupportedCurrency.USD 
+                  }).format(formData.discountAmount || 0)}
+                </Typography>
               )}
               <Divider sx={{ my: 1 }} />
-              <Typography variant="h6">Total: ${total.toFixed(2)}</Typography>
+              <Typography variant="h6">
+                Total: {new Intl.NumberFormat('en-US', { 
+                  style: 'currency', 
+                  currency: formData.currency || SupportedCurrency.USD 
+                }).format(total)}
+              </Typography>
             </Box>
           </Grid>
         </Grid>

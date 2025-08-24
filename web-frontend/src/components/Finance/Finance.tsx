@@ -31,6 +31,7 @@ import FinancialReports from './FinancialReports';
 import CreateInvoiceDialog from './CreateInvoiceDialog';
 import InvoiceDetailDialog from './InvoiceDetailDialog';
 import RecordPaymentDialog from './RecordPaymentDialog';
+import ExchangeRateDialog from './ExchangeRateDialog';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -63,6 +64,7 @@ const Finance: React.FC = () => {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [invoiceDetailOpen, setInvoiceDetailOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [exchangeRateDialogOpen, setExchangeRateDialogOpen] = useState(false);
 
   useEffect(() => {
     loadFinancialData();
@@ -149,6 +151,14 @@ const Finance: React.FC = () => {
               <RefreshIcon />
             </IconButton>
           </Tooltip>
+          <Button
+            variant="outlined"
+            startIcon={<MoneyIcon />}
+            onClick={() => setExchangeRateDialogOpen(true)}
+            sx={{ mr: 1 }}
+          >
+            Exchange Rates
+          </Button>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -293,6 +303,11 @@ const Finance: React.FC = () => {
         open={createInvoiceOpen}
         onClose={() => setCreateInvoiceOpen(false)}
         onSuccess={handleCreateSuccess}
+      />
+
+      <ExchangeRateDialog
+        open={exchangeRateDialogOpen}
+        onClose={() => setExchangeRateDialogOpen(false)}
       />
 
       {selectedInvoice && (
