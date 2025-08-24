@@ -7,8 +7,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
-import { Job } from '../../jobs/entities/job.entity';
+import { User } from '../../users/user.entity';
+import { Job } from '../../jobs/job.entity';
 
 export enum TodoPriority {
   LOW = 'low',
