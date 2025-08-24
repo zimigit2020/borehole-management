@@ -24,12 +24,14 @@ import {
   TrendingDown as TrendingDownIcon,
   AttachMoney as MoneyIcon,
   Refresh as RefreshIcon,
+  ShoppingCart as PurchaseIcon,
 } from '@mui/icons-material';
 import inventoryService, { InventoryItem } from '../../services/inventoryService';
 import InventoryList from './InventoryList';
 import InventoryMovements from './InventoryMovements';
 import LowStockAlert from './LowStockAlert';
 import InventoryReports from './InventoryReports';
+import PurchaseOrdersList from './PurchaseOrdersList';
 import AddItemDialog from './AddItemDialog';
 import StockMovementDialog from './StockMovementDialog';
 
@@ -142,13 +144,27 @@ const Inventory: React.FC = () => {
           >
             Refresh
           </Button>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => setAddItemOpen(true)}
-          >
-            Add Item
-          </Button>
+          {activeTab === 0 && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => setAddItemOpen(true)}
+            >
+              Add Item
+            </Button>
+          )}
+          {activeTab === 2 && (
+            <Button
+              variant="contained"
+              startIcon={<PurchaseIcon />}
+              onClick={() => {
+                // TODO: Open Create Purchase Order dialog
+                alert('Create Purchase Order - Coming soon!');
+              }}
+            >
+              Create Purchase Order
+            </Button>
+          )}
         </Box>
       </Box>
 
@@ -243,6 +259,7 @@ const Inventory: React.FC = () => {
         <Tabs value={activeTab} onChange={handleTabChange} aria-label="inventory tabs">
           <Tab label="Inventory Items" />
           <Tab label="Stock Movements" />
+          <Tab label="Purchase Orders" />
           <Tab label="Reports" />
         </Tabs>
 
@@ -263,6 +280,10 @@ const Inventory: React.FC = () => {
         </TabPanel>
 
         <TabPanel value={activeTab} index={2}>
+          <PurchaseOrdersList />
+        </TabPanel>
+
+        <TabPanel value={activeTab} index={3}>
           <InventoryReports inventoryValue={inventoryValue} />
         </TabPanel>
       </Paper>
