@@ -506,6 +506,106 @@ export class MigrationService implements OnModuleInit {
           console.log('⚠ expenses table might already exist');
         }
 
+        // Create purchase order tables if they don't exist
+        const createPurchaseOrdersTable = `
+          DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'purchase_orders_status_enum') THEN
+              CREATE TYPE "purchase_orders_status_enum" AS ENUM('draft', 'pending_approval', 'approved', 'rejected', 'sent', 'partially_received', 'received', 'cancelled', 'closed');
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'purchase_orders_priority_enum') THEN
+              CREATE TYPE "purchase_orders_priority_enum" AS ENUM('low', 'normal', 'high', 'urgent');
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'purchase_orders_paymentterms_enum') THEN
+              CREATE TYPE "purchase_orders_paymentterms_enum" AS ENUM('net_30', 'net_60', 'net_90', 'due_on_receipt', 'cash_on_delivery', 'prepaid', 'custom');
+            END IF;
+          END $$;
+          
+          CREATE TABLE IF NOT EXISTS "purchase_orders" (
+            "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+            "orderNumber" VARCHAR UNIQUE NOT NULL,
+            "status" "purchase_orders_status_enum" DEFAULT 'draft',
+            "priority" "purchase_orders_priority_enum" DEFAULT 'normal',
+            "supplier" VARCHAR NOT NULL,
+            "supplierContact" VARCHAR,
+            "supplierEmail" VARCHAR,
+            "supplierPhone" VARCHAR,
+            "supplierAddress" VARCHAR,
+            "orderDate" TIMESTAMP NOT NULL,
+            "expectedDeliveryDate" TIMESTAMP,
+            "actualDeliveryDate" TIMESTAMP,
+            "deliveryLocation" VARCHAR,
+            "paymentTerms" "purchase_orders_paymentterms_enum" DEFAULT 'net_30',
+            "customPaymentTerms" VARCHAR,
+            "subtotal" DECIMAL(10,2) DEFAULT 0,
+            "taxRate" DECIMAL(5,2) DEFAULT 0,
+            "taxAmount" DECIMAL(10,2) DEFAULT 0,
+            "shippingCost" DECIMAL(10,2) DEFAULT 0,
+            "discountAmount" DECIMAL(10,2) DEFAULT 0,
+            "totalAmount" DECIMAL(10,2) DEFAULT 0,
+            "currency" VARCHAR DEFAULT 'USD',
+            "notes" TEXT,
+            "internalNotes" TEXT,
+            "termsAndConditions" TEXT,
+            "jobId" VARCHAR,
+            "projectCode" VARCHAR,
+            "costCenter" VARCHAR,
+            "createdById" VARCHAR NOT NULL,
+            "approvedById" VARCHAR,
+            "approvedAt" TIMESTAMP,
+            "approvalNotes" TEXT,
+            "rejectedById" VARCHAR,
+            "rejectedAt" TIMESTAMP,
+            "rejectionReason" TEXT,
+            "sentAt" TIMESTAMP,
+            "receivedById" VARCHAR,
+            "receivedAt" TIMESTAMP,
+            "receivingNotes" TEXT,
+            "invoiceNumber" VARCHAR,
+            "invoiceDate" TIMESTAMP,
+            "invoiceAmount" DECIMAL(10,2),
+            "attachments" VARCHAR,
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          )
+        `;
+
+        const createPurchaseOrderItemsTable = `
+          CREATE TABLE IF NOT EXISTS "purchase_order_items" (
+            "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+            "purchaseOrderId" VARCHAR NOT NULL,
+            "inventoryItemId" VARCHAR,
+            "sku" VARCHAR NOT NULL,
+            "description" VARCHAR NOT NULL,
+            "specifications" VARCHAR,
+            "quantity" DECIMAL(10,2) NOT NULL,
+            "unit" VARCHAR DEFAULT 'piece',
+            "unitPrice" DECIMAL(10,2) NOT NULL,
+            "totalPrice" DECIMAL(10,2) NOT NULL,
+            "discountPercent" DECIMAL(5,2),
+            "discountAmount" DECIMAL(10,2),
+            "receivedQuantity" DECIMAL(10,2) DEFAULT 0,
+            "receivedDate" TIMESTAMP,
+            "receivedBy" VARCHAR,
+            "notes" TEXT,
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY ("purchaseOrderId") REFERENCES "purchase_orders"("id") ON DELETE CASCADE
+          )
+        `;
+
+        try {
+          await queryRunner.query(createPurchaseOrdersTable);
+          console.log('✓ Created purchase_orders table');
+        } catch (error) {
+          console.log('⚠ purchase_orders table might already exist');
+        }
+
+        try {
+          await queryRunner.query(createPurchaseOrderItemsTable);
+          console.log('✓ Created purchase_order_items table');
+        } catch (error) {
+          console.log('⚠ purchase_order_items table might already exist');
+        }
+
         console.log('✅ Database migrations completed');
       } finally {
         // Release the query runner
