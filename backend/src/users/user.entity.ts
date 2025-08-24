@@ -29,6 +29,11 @@ export class User {
   @Column()
   lastName: string;
 
+  // Computed property for full name
+  get name(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
   @Column({ nullable: true })
   phone: string;
 

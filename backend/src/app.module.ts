@@ -13,6 +13,7 @@ import { DatabaseModule } from './database/database.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { InstallationsModule } from './installations/installations.module';
 import { FinanceModule } from './finance/finance.module';
+import { CalendarModule } from './calendar/calendar.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { FinanceModule } from './finance/finance.module';
     InventoryModule,
     InstallationsModule,
     FinanceModule,
+    CalendarModule,
   ],
   controllers: [AppController],
 })
