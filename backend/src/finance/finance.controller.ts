@@ -6,6 +6,7 @@ import { Roles } from '../auth/roles.decorator';
 import { FinanceService } from './finance.service';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './dto/create-invoice.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
+import { CreateExchangeRateDto, UpdateExchangeRateDto, ConvertCurrencyDto } from './dto/exchange-rate.dto';
 import { InvoiceStatus } from './entities/invoice.entity';
 
 @ApiTags('finance')
@@ -134,5 +135,43 @@ export class FinanceController {
   async updateOverdueStatuses() {
     await this.financeService.updateOverdueStatuses();
     return { message: 'Overdue statuses updated' };
+  }
+
+  // Exchange Rate endpoints
+  @Post('exchange-rates')
+  @Roles('admin', 'manager')
+  @ApiOperation({ summary: 'Create or update exchange rate' })
+  async createExchangeRate(@Body() dto: CreateExchangeRateDto, @Request() req) {
+    return this.financeService.createExchangeRate(dto, req.user);
+  }
+
+  @Put('exchange-rates/:from/:to')
+  @Roles('admin', 'manager')
+  @ApiOperation({ summary: 'Update exchange rate' })
+  async updateExchangeRate(
+    @Param('from') from: string,
+    @Param('to') to: string,
+    @Body() dto: UpdateExchangeRateDto,
+    @Request() req,
+  ) {
+    return this.financeService.updateExchangeRate(from, to, dto, req.user);
+  }
+
+  @Get('exchange-rates')
+  @ApiOperation({ summary: 'Get all exchange rates' })
+  async getExchangeRates(@Query('activeOnly') activeOnly: boolean = true) {
+    return this.financeService.getExchangeRates(activeOnly);
+  }
+
+  @Get('exchange-rates/:from/:to')
+  @ApiOperation({ summary: 'Get specific exchange rate' })
+  async getExchangeRate(@Param('from') from: string, @Param('to') to: string) {
+    return this.financeService.getExchangeRate(from, to);
+  }
+
+  @Post('exchange-rates/convert')
+  @ApiOperation({ summary: 'Convert currency' })
+  async convertCurrency(@Body() dto: ConvertCurrencyDto) {
+    return this.financeService.convertCurrency(dto);
   }
 }

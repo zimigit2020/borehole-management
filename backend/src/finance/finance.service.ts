@@ -4,6 +4,8 @@ import { Repository, Between, LessThan } from 'typeorm';
 import { Invoice, InvoiceItem, Payment, InvoiceStatus } from './entities/invoice.entity';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './dto/create-invoice.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
+import { CreateExchangeRateDto, UpdateExchangeRateDto, ConvertCurrencyDto, SupportedCurrency } from './dto/exchange-rate.dto';
+import { ExchangeRate } from './entities/exchange-rate.entity';
 import { User } from '../users/user.entity';
 
 @Injectable()
@@ -15,6 +17,8 @@ export class FinanceService {
     private invoiceItemsRepository: Repository<InvoiceItem>,
     @InjectRepository(Payment)
     private paymentsRepository: Repository<Payment>,
+    @InjectRepository(ExchangeRate)
+    private exchangeRatesRepository: Repository<ExchangeRate>,
   ) {}
 
   // Invoice Management
@@ -336,6 +340,143 @@ export class FinanceService {
       invoice.status = InvoiceStatus.OVERDUE;
       await this.invoicesRepository.save(invoice);
     }
+  }
+
+  // Exchange Rate Management
+  async createExchangeRate(dto: CreateExchangeRateDto, user: User): Promise<ExchangeRate> {
+    // Check if rate already exists for this currency pair
+    const existing = await this.exchangeRatesRepository.findOne({
+      where: {
+        fromCurrency: dto.fromCurrency,
+        toCurrency: dto.toCurrency,
+        isActive: true,
+      },
+    });
+
+    if (existing) {
+      // Deactivate the old rate
+      existing.isActive = false;
+      await this.exchangeRatesRepository.save(existing);
+    }
+
+    const exchangeRate = this.exchangeRatesRepository.create({
+      ...dto,
+      updatedById: user.id,
+      isActive: true,
+    });
+
+    return this.exchangeRatesRepository.save(exchangeRate);
+  }
+
+  async updateExchangeRate(
+    fromCurrency: string,
+    toCurrency: string,
+    dto: UpdateExchangeRateDto,
+    user: User,
+  ): Promise<ExchangeRate> {
+    const exchangeRate = await this.exchangeRatesRepository.findOne({
+      where: {
+        fromCurrency,
+        toCurrency,
+        isActive: true,
+      },
+    });
+
+    if (!exchangeRate) {
+      throw new NotFoundException('Exchange rate not found');
+    }
+
+    // Create new rate entry (keeping history)
+    const newRate = this.exchangeRatesRepository.create({
+      fromCurrency,
+      toCurrency,
+      rate: dto.rate,
+      notes: dto.notes,
+      effectiveDate: new Date(),
+      updatedById: user.id,
+      isActive: true,
+    });
+
+    // Deactivate old rate
+    exchangeRate.isActive = false;
+    await this.exchangeRatesRepository.save(exchangeRate);
+
+    return this.exchangeRatesRepository.save(newRate);
+  }
+
+  async getExchangeRates(activeOnly = true): Promise<ExchangeRate[]> {
+    const query = this.exchangeRatesRepository.createQueryBuilder('rate')
+      .leftJoinAndSelect('rate.updatedBy', 'updatedBy');
+
+    if (activeOnly) {
+      query.andWhere('rate.isActive = :isActive', { isActive: true });
+    }
+
+    return query.orderBy('rate.effectiveDate', 'DESC').getMany();
+  }
+
+  async getExchangeRate(fromCurrency: string, toCurrency: string): Promise<ExchangeRate> {
+    const rate = await this.exchangeRatesRepository.findOne({
+      where: {
+        fromCurrency,
+        toCurrency,
+        isActive: true,
+      },
+    });
+
+    if (!rate) {
+      // Check for inverse rate
+      const inverseRate = await this.exchangeRatesRepository.findOne({
+        where: {
+          fromCurrency: toCurrency,
+          toCurrency: fromCurrency,
+          isActive: true,
+        },
+      });
+
+      if (inverseRate) {
+        // Return a calculated inverse rate
+        return {
+          ...inverseRate,
+          fromCurrency: fromCurrency,
+          toCurrency: toCurrency,
+          rate: 1 / inverseRate.rate,
+        } as ExchangeRate;
+      }
+
+      throw new NotFoundException(`Exchange rate not found for ${fromCurrency} to ${toCurrency}`);
+    }
+
+    return rate;
+  }
+
+  async convertCurrency(dto: ConvertCurrencyDto): Promise<{
+    originalAmount: number;
+    convertedAmount: number;
+    rate: number;
+    fromCurrency: string;
+    toCurrency: string;
+  }> {
+    if (dto.fromCurrency === dto.toCurrency) {
+      return {
+        originalAmount: dto.amount,
+        convertedAmount: dto.amount,
+        rate: 1,
+        fromCurrency: dto.fromCurrency,
+        toCurrency: dto.toCurrency,
+      };
+    }
+
+    const exchangeRate = await this.getExchangeRate(dto.fromCurrency, dto.toCurrency);
+    const convertedAmount = dto.amount * exchangeRate.rate;
+
+    return {
+      originalAmount: dto.amount,
+      convertedAmount,
+      rate: exchangeRate.rate,
+      fromCurrency: dto.fromCurrency,
+      toCurrency: dto.toCurrency,
+    };
   }
 
   // Helper methods
