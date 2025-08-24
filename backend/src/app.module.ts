@@ -10,6 +10,9 @@ import { FilesModule } from './files/files.module';
 import { SyncModule } from './sync/sync.module';
 import { DrillingReportsModule } from './drilling-reports/drilling-reports.module';
 import { DatabaseModule } from './database/database.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { InstallationsModule } from './installations/installations.module';
+import { FinanceModule } from './finance/finance.module';
 
 @Module({
   imports: [
@@ -58,6 +61,9 @@ import { DatabaseModule } from './database/database.module';
     FilesModule,
     SyncModule,
     DrillingReportsModule,
+    InventoryModule,
+    InstallationsModule,
+    FinanceModule,
   ],
   controllers: [AppController],
 })
