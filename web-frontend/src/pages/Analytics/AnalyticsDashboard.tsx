@@ -25,6 +25,7 @@ import {
   Tooltip,
   Stack,
   Alert,
+  Avatar,
 } from '@mui/material';
 import {
   Download as DownloadIcon,
@@ -60,13 +61,11 @@ import {
   Area,
   AreaChart,
   RadarChart,
-  RadarAxis,
   PolarGrid,
   Radar,
-  Treemap,
 } from 'recharts';
 import { format, startOfMonth, endOfMonth, subMonths, parseISO } from 'date-fns';
-import jobService from '../../services/jobService';
+import jobsService from '../../services/jobsService';
 import financeService from '../../services/financeService';
 import inventoryService from '../../services/inventoryService';
 import installationService from '../../services/installationService';
