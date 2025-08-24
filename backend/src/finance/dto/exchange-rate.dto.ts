@@ -48,11 +48,11 @@ export class ConvertCurrencyDto {
   @IsNumber()
   amount: number;
 
-  @ApiProperty({ enum: SupportedCurrency })
-  @IsEnum(SupportedCurrency)
-  fromCurrency: SupportedCurrency;
+  @ApiProperty()
+  @IsString()
+  fromCurrency: string;
 
-  @ApiProperty({ enum: SupportedCurrency })
-  @IsEnum(SupportedCurrency)
-  toCurrency: SupportedCurrency;
+  @ApiProperty()
+  @IsString()
+  toCurrency: string;
 }

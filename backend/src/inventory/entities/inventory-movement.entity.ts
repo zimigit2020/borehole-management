@@ -12,6 +12,9 @@ export enum MovementType {
   RELEASED = 'released',        // Released from reservation
   DAMAGED = 'damaged',          // Damaged/lost items
   RETURNED = 'returned',        // Returned from job
+  PURCHASE_ORDER = 'purchase_order', // Received from purchase order
+  JOB_ALLOCATION = 'job_allocation', // Allocated to job
+  USAGE = 'usage',              // Used on job
 }
 
 @Entity('inventory_movements')

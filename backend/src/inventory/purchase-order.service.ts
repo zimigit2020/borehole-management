@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, In, IsNull, Not } from 'typeorm';
 import { PurchaseOrder, PurchaseOrderItem, PurchaseOrderStatus } from './entities/purchase-order.entity';
 import { InventoryItem } from './entities/inventory-item.entity';
-import { InventoryMovement } from './entities/inventory-movement.entity';
+import { InventoryMovement, MovementType } from './entities/inventory-movement.entity';
 import { 
   CreatePurchaseOrderDto, 
   UpdatePurchaseOrderDto, 
@@ -310,7 +310,7 @@ export class PurchaseOrderService {
           // Create movement record
           await this.inventoryMovementRepository.save({
             itemId: item.inventoryItemId,
-            type: 'purchase_order',
+            type: MovementType.PURCHASE_ORDER,
             quantity: receivedItem.receivedQuantity,
             unitCost: item.unitPrice,
             totalCost: receivedItem.receivedQuantity * item.unitPrice,

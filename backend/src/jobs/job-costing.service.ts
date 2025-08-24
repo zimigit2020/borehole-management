@@ -4,7 +4,7 @@ import { Repository, Between, In } from 'typeorm';
 import { Job } from './job.entity';
 import { Invoice, InvoiceItem, Payment } from '../finance/entities/invoice.entity';
 import { Expense } from '../finance/entities/expense.entity';
-import { InventoryMovement } from '../inventory/entities/inventory-movement.entity';
+import { InventoryMovement, MovementType } from '../inventory/entities/inventory-movement.entity';
 import { PurchaseOrder, PurchaseOrderItem } from '../inventory/entities/purchase-order.entity';
 import { JobCostingReport, JobProfitabilityReport, CostTrendReport } from './dto/job-costing.dto';
 
@@ -61,7 +61,7 @@ export class JobCostingService {
     });
 
     const materialsCost = inventoryMovements
-      .filter(m => m.type === 'job_allocation' || m.type === 'usage')
+      .filter(m => m.type === MovementType.JOB_ALLOCATION || m.type === MovementType.USAGE)
       .reduce((sum, m) => sum + Number(m.totalCost || 0), 0);
 
     // Get purchase orders for the job
@@ -285,7 +285,7 @@ export class JobCostingService {
     const inventoryMovements = await this.inventoryMovementRepository.find({
       where: {
         createdAt: Between(startDate, endDate),
-        type: In(['job_allocation', 'usage']),
+        type: In([MovementType.JOB_ALLOCATION, MovementType.USAGE]),
       },
     });
 
@@ -303,7 +303,7 @@ export class JobCostingService {
       const periodKey = this.getPeriodKey(expense.expenseDate, period);
       const trend = trends.get(periodKey) || this.createEmptyTrend(periodKey);
 
-      const amount = Number(expense.amountInBaseCurrency);
+      const amount = Number(expense.amountInUSD || expense.amount);
       trend.totalCosts += amount;
 
       switch (expense.category) {
@@ -495,7 +495,7 @@ export class JobCostingService {
       if (!grouped[expense.category]) {
         grouped[expense.category] = 0;
       }
-      grouped[expense.category] += Number(expense.amountInBaseCurrency);
+      grouped[expense.category] += Number(expense.amountInUSD || expense.amount);
     }
     
     return grouped;
@@ -505,14 +505,14 @@ export class JobCostingService {
     const overheadCategories = ['utilities', 'office_supplies', 'insurance', 'permits', 'professional_fees'];
     return expenses
       .filter(e => overheadCategories.includes(e.category))
-      .reduce((sum, e) => sum + Number(e.amountInBaseCurrency), 0);
+      .reduce((sum, e) => sum + Number(e.amountInUSD || e.amount), 0);
   }
 
   private calculateOtherCosts(expenses: Expense[], categorizedCosts: Record<string, number>): number {
     const mainCategories = ['labor', 'equipment', 'transport', 'utilities', 'office_supplies', 'insurance', 'permits', 'professional_fees'];
     return expenses
       .filter(e => !mainCategories.includes(e.category))
-      .reduce((sum, e) => sum + Number(e.amountInBaseCurrency), 0);
+      .reduce((sum, e) => sum + Number(e.amountInUSD || e.amount), 0);
   }
 
   private createCostTimeline(
@@ -529,14 +529,14 @@ export class JobCostingService {
         type: 'expense',
         category: expense.category,
         description: expense.description,
-        amount: Number(expense.amountInBaseCurrency),
+        amount: Number(expense.amountInUSD || expense.amount),
         reference: expense.id,
       });
     }
 
     // Add inventory movements to timeline
     for (const movement of inventoryMovements) {
-      if (movement.type === 'job_allocation' || movement.type === 'usage') {
+      if (movement.type === MovementType.JOB_ALLOCATION || movement.type === MovementType.USAGE) {
         timeline.push({
           date: movement.createdAt,
           type: 'material',
