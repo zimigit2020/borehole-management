@@ -11,6 +11,7 @@ export class AppController {
       status: 'ok',
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV,
+      version: '2.0.1', // Updated with all modules
     };
   }
 
@@ -19,9 +20,13 @@ export class AppController {
   getRoot() {
     return {
       name: 'Borehole Management API',
-      version: '1.0.0',
-      phase: 'Phase 1',
+      version: '2.0.1',
+      phase: 'Phase 1 - Complete',
       docs: '/api/docs',
+      modules: [
+        'auth', 'users', 'jobs', 'surveys', 'drilling',
+        'inventory', 'installations', 'finance', 'calendar'
+      ],
     };
   }
 }
