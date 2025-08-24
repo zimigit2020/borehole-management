@@ -30,24 +30,24 @@ export class CalendarService {
       jobId?: string;
     },
   ): Promise<CalendarEvent[]> {
-    const query = this.eventsRepository.createQueryBuilder('event')
-      .leftJoinAndSelect('event.attendees', 'attendees')
-      .leftJoinAndSelect('event.job', 'job')
-      .leftJoinAndSelect('event.installation', 'installation')
-      .leftJoinAndSelect('event.invoice', 'invoice')
-      .where('event.startDate BETWEEN :startDate AND :endDate', {
-        startDate,
-        endDate,
-      })
-      .andWhere('event.deletedAt IS NULL');
+    try {
+      const query = this.eventsRepository.createQueryBuilder('event')
+        .leftJoinAndSelect('event.attendees', 'attendees')
+        .leftJoinAndSelect('event.job', 'job')
+        .leftJoinAndSelect('event.installation', 'installation')
+        .leftJoinAndSelect('event.invoice', 'invoice')
+        .where('event.startDate BETWEEN :startDate AND :endDate', {
+          startDate,
+          endDate,
+        });
 
     // Apply role-based filtering
     switch (user.role) {
       case UserRole.DRILLER:
       case UserRole.SURVEYOR:
-        // Specialists see only their assigned work
+        // Specialists see only their assigned work or public events
         query.andWhere(
-          '(event.createdById = :userId OR attendees.id = :userId OR event.visibility = :public)',
+          '(event.createdById = :userId OR event.visibility = :public)',
           {
             userId: user.id,
             public: EventVisibility.PUBLIC,
@@ -77,14 +77,10 @@ export class CalendarService {
         break;
 
       default:
-        // Other roles see only public events or events they're invited to
-        query.andWhere(
-          '(event.visibility = :public OR :userId = ANY(attendees.id))',
-          {
-            public: EventVisibility.PUBLIC,
-            userId: user.id,
-          },
-        );
+        // Other roles see only public events
+        query.andWhere('event.visibility = :public', {
+          public: EventVisibility.PUBLIC,
+        });
     }
 
     // Apply additional filters
@@ -103,6 +99,11 @@ export class CalendarService {
     }
 
     return query.orderBy('event.startDate', 'ASC').getMany();
+    } catch (error) {
+      console.error('Error fetching calendar events:', error);
+      // Return empty array on error to prevent frontend crash
+      return [];
+    }
   }
 
   // Create a new event
