@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import usersService, { User, CreateUserDto, UpdateUserDto } from '../../services/users.service';
+import usersService, { User } from '../../services/users.service';
 import {
   Box,
   Paper,
@@ -34,21 +34,14 @@ import {
   Divider,
   Switch,
   FormControlLabel,
-  Badge,
   Stack,
-  Fab,
 } from '@mui/material';
 import {
-  Add,
   Search,
   Edit,
   Delete,
   MoreVert,
   PersonAdd,
-  Download,
-  Upload,
-  FilterList,
-  Email,
   Phone,
   LocationOn,
   Badge as BadgeIcon,

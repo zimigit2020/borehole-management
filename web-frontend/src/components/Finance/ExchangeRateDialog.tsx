@@ -32,7 +32,6 @@ import { format } from 'date-fns';
 import financeService, { 
   ExchangeRate, 
   CreateExchangeRateDto, 
-  UpdateExchangeRateDto,
   SupportedCurrency 
 } from '../../services/financeService';
 
