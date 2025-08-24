@@ -23,7 +23,9 @@ import {
   AttachMoney as MoneyIcon,
   Refresh as RefreshIcon,
   Assessment as ReportIcon,
+  Lock as LockIcon,
 } from '@mui/icons-material';
+import { useAuth } from '../../contexts/AuthContext';
 import financeService, { Invoice, FinancialSummary } from '../../services/financeService';
 import InvoiceList from './InvoiceList';
 import PaymentsList from './PaymentsList';
@@ -54,6 +56,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const Finance: React.FC = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState(0);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [overdueInvoices, setOverdueInvoices] = useState<Invoice[]>([]);
@@ -65,6 +68,12 @@ const Finance: React.FC = () => {
   const [invoiceDetailOpen, setInvoiceDetailOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [exchangeRateDialogOpen, setExchangeRateDialogOpen] = useState(false);
+
+  // Check if user has finance access (admin or project_manager)
+  const hasFinanceAccess = user?.role === 'admin' || user?.role === 'project_manager';
+  const canCreateInvoice = hasFinanceAccess;
+  const canRecordPayment = hasFinanceAccess;
+  const canViewReports = hasFinanceAccess;
 
   useEffect(() => {
     loadFinancialData();
@@ -139,6 +148,28 @@ const Finance: React.FC = () => {
     );
   }
 
+  // Show access denied message for users without finance access
+  if (!hasFinanceAccess) {
+    return (
+      <Box>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h4" component="h1">
+            Finance Management
+          </Typography>
+        </Box>
+        <Alert severity="warning" icon={<LockIcon />}>
+          <Typography variant="h6" gutterBottom>
+            Access Restricted
+          </Typography>
+          <Typography>
+            You don't have permission to access finance management. 
+            Only administrators and project managers can view and manage financial data.
+          </Typography>
+        </Alert>
+      </Box>
+    );
+  }
+
   return (
     <Box>
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -151,21 +182,25 @@ const Finance: React.FC = () => {
               <RefreshIcon />
             </IconButton>
           </Tooltip>
-          <Button
-            variant="outlined"
-            startIcon={<MoneyIcon />}
-            onClick={() => setExchangeRateDialogOpen(true)}
-            sx={{ mr: 1 }}
-          >
-            Exchange Rates
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => setCreateInvoiceOpen(true)}
-          >
-            Create Invoice
-          </Button>
+          {canCreateInvoice && (
+            <>
+              <Button
+                variant="outlined"
+                startIcon={<MoneyIcon />}
+                onClick={() => setExchangeRateDialogOpen(true)}
+                sx={{ mr: 1 }}
+              >
+                Exchange Rates
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={() => setCreateInvoiceOpen(true)}
+              >
+                Create Invoice
+              </Button>
+            </>
+          )}
         </Box>
       </Box>
 
