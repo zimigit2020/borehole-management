@@ -6,6 +6,8 @@ import { CreateInvoiceDto, UpdateInvoiceDto } from './dto/create-invoice.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { CreateExchangeRateDto, UpdateExchangeRateDto, ConvertCurrencyDto, SupportedCurrency } from './dto/exchange-rate.dto';
 import { ExchangeRate } from './entities/exchange-rate.entity';
+import { Expense, ExpenseStatus } from './entities/expense.entity';
+import { CreateExpenseDto, UpdateExpenseDto, ApproveExpenseDto, RejectExpenseDto, RecordReimbursementDto } from './dto/expense.dto';
 import { User } from '../users/user.entity';
 
 @Injectable()
@@ -19,6 +21,8 @@ export class FinanceService {
     private paymentsRepository: Repository<Payment>,
     @InjectRepository(ExchangeRate)
     private exchangeRatesRepository: Repository<ExchangeRate>,
+    @InjectRepository(Expense)
+    private expensesRepository: Repository<Expense>,
   ) {}
 
   // Invoice Management
@@ -510,5 +514,225 @@ export class FinanceService {
     }
 
     return `PAY-${year}-00001`;
+  }
+
+  // Expense Management
+  async createExpense(dto: CreateExpenseDto, user: User): Promise<Expense> {
+    // Convert to USD if different currency
+    let amountInUSD = dto.amount;
+    if (dto.currency && dto.currency !== 'USD') {
+      const conversion = await this.convertCurrency({
+        amount: dto.amount,
+        fromCurrency: dto.currency,
+        toCurrency: 'USD',
+      });
+      amountInUSD = conversion.convertedAmount;
+    }
+
+    const expense = this.expensesRepository.create({
+      ...dto,
+      submittedById: user.id,
+      currency: dto.currency || 'USD',
+      amountInUSD,
+      status: ExpenseStatus.PENDING,
+    });
+
+    return this.expensesRepository.save(expense);
+  }
+
+  async getExpenses(filters?: {
+    status?: ExpenseStatus;
+    category?: string;
+    jobId?: string;
+    startDate?: Date;
+    endDate?: Date;
+    submittedById?: string;
+  }): Promise<Expense[]> {
+    const query = this.expensesRepository.createQueryBuilder('expense')
+      .leftJoinAndSelect('expense.job', 'job')
+      .leftJoinAndSelect('expense.submittedBy', 'submittedBy')
+      .leftJoinAndSelect('expense.approvedBy', 'approvedBy');
+
+    if (filters?.status) {
+      query.andWhere('expense.status = :status', { status: filters.status });
+    }
+
+    if (filters?.category) {
+      query.andWhere('expense.category = :category', { category: filters.category });
+    }
+
+    if (filters?.jobId) {
+      query.andWhere('expense.jobId = :jobId', { jobId: filters.jobId });
+    }
+
+    if (filters?.submittedById) {
+      query.andWhere('expense.submittedById = :submittedById', { submittedById: filters.submittedById });
+    }
+
+    if (filters?.startDate && filters?.endDate) {
+      query.andWhere('expense.expenseDate BETWEEN :startDate AND :endDate', {
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+      });
+    }
+
+    return query.orderBy('expense.expenseDate', 'DESC').getMany();
+  }
+
+  async getExpenseById(id: string): Promise<Expense> {
+    const expense = await this.expensesRepository.findOne({
+      where: { id },
+      relations: ['job', 'submittedBy', 'approvedBy'],
+    });
+
+    if (!expense) {
+      throw new NotFoundException(`Expense with ID ${id} not found`);
+    }
+
+    return expense;
+  }
+
+  async updateExpense(id: string, dto: UpdateExpenseDto): Promise<Expense> {
+    const expense = await this.getExpenseById(id);
+
+    // Only allow updates if expense is pending
+    if (expense.status !== ExpenseStatus.PENDING) {
+      throw new BadRequestException('Can only update pending expenses');
+    }
+
+    // Recalculate USD amount if currency or amount changed
+    if (dto.amount || dto.currency) {
+      const amount = dto.amount || expense.amount;
+      const currency = dto.currency || expense.currency;
+      
+      if (currency !== 'USD') {
+        const conversion = await this.convertCurrency({
+          amount,
+          fromCurrency: currency,
+          toCurrency: 'USD',
+        });
+        expense.amountInUSD = conversion.convertedAmount;
+      } else {
+        expense.amountInUSD = amount;
+      }
+    }
+
+    Object.assign(expense, dto);
+    return this.expensesRepository.save(expense);
+  }
+
+  async approveExpense(id: string, dto: ApproveExpenseDto, user: User): Promise<Expense> {
+    const expense = await this.getExpenseById(id);
+
+    if (expense.status !== ExpenseStatus.PENDING) {
+      throw new BadRequestException('Expense is not pending approval');
+    }
+
+    expense.status = ExpenseStatus.APPROVED;
+    expense.approvedById = user.id;
+    expense.approvedAt = new Date();
+    expense.approvalNotes = dto.approvalNotes;
+
+    return this.expensesRepository.save(expense);
+  }
+
+  async rejectExpense(id: string, dto: RejectExpenseDto, user: User): Promise<Expense> {
+    const expense = await this.getExpenseById(id);
+
+    if (expense.status !== ExpenseStatus.PENDING) {
+      throw new BadRequestException('Expense is not pending approval');
+    }
+
+    expense.status = ExpenseStatus.REJECTED;
+    expense.approvedById = user.id;
+    expense.approvedAt = new Date();
+    expense.approvalNotes = dto.reason;
+
+    return this.expensesRepository.save(expense);
+  }
+
+  async recordReimbursement(id: string, dto: RecordReimbursementDto): Promise<Expense> {
+    const expense = await this.getExpenseById(id);
+
+    if (!expense.requiresReimbursement) {
+      throw new BadRequestException('Expense does not require reimbursement');
+    }
+
+    if (expense.status !== ExpenseStatus.APPROVED && expense.status !== ExpenseStatus.PAID) {
+      throw new BadRequestException('Expense must be approved or paid before reimbursement');
+    }
+
+    expense.status = ExpenseStatus.REIMBURSED;
+    expense.reimbursedAt = new Date();
+    expense.reimbursementReference = dto.reimbursementReference;
+
+    return this.expensesRepository.save(expense);
+  }
+
+  async deleteExpense(id: string): Promise<void> {
+    const expense = await this.getExpenseById(id);
+
+    if (expense.status !== ExpenseStatus.PENDING) {
+      throw new BadRequestException('Can only delete pending expenses');
+    }
+
+    await this.expensesRepository.remove(expense);
+  }
+
+  // Get expense summary for reporting
+  async getExpenseSummary(startDate: Date, endDate: Date): Promise<{
+    totalExpenses: number;
+    byCategory: { category: string; amount: number }[];
+    byStatus: { status: string; count: number; amount: number }[];
+    byJob: { jobId: string; jobName: string; amount: number }[];
+  }> {
+    const expenses = await this.getExpenses({ startDate, endDate });
+
+    const totalExpenses = expenses.reduce((sum, exp) => sum + Number(exp.amountInUSD || exp.amount), 0);
+
+    // Group by category
+    const byCategory = Object.values(
+      expenses.reduce((acc, exp) => {
+        if (!acc[exp.category]) {
+          acc[exp.category] = { category: exp.category, amount: 0 };
+        }
+        acc[exp.category].amount += Number(exp.amountInUSD || exp.amount);
+        return acc;
+      }, {} as Record<string, { category: string; amount: number }>)
+    );
+
+    // Group by status
+    const byStatus = Object.values(
+      expenses.reduce((acc, exp) => {
+        if (!acc[exp.status]) {
+          acc[exp.status] = { status: exp.status, count: 0, amount: 0 };
+        }
+        acc[exp.status].count++;
+        acc[exp.status].amount += Number(exp.amountInUSD || exp.amount);
+        return acc;
+      }, {} as Record<string, { status: string; count: number; amount: number }>)
+    );
+
+    // Group by job
+    const byJob = Object.values(
+      expenses.filter(exp => exp.jobId).reduce((acc, exp) => {
+        if (!acc[exp.jobId]) {
+          acc[exp.jobId] = { 
+            jobId: exp.jobId, 
+            jobName: exp.job?.name || 'Unknown Job', 
+            amount: 0 
+          };
+        }
+        acc[exp.jobId].amount += Number(exp.amountInUSD || exp.amount);
+        return acc;
+      }, {} as Record<string, { jobId: string; jobName: string; amount: number }>)
+    );
+
+    return {
+      totalExpenses,
+      byCategory,
+      byStatus,
+      byJob,
+    };
   }
 }

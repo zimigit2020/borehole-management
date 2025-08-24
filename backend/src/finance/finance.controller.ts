@@ -7,7 +7,9 @@ import { FinanceService } from './finance.service';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './dto/create-invoice.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { CreateExchangeRateDto, UpdateExchangeRateDto, ConvertCurrencyDto } from './dto/exchange-rate.dto';
+import { CreateExpenseDto, UpdateExpenseDto, ApproveExpenseDto, RejectExpenseDto, RecordReimbursementDto } from './dto/expense.dto';
 import { InvoiceStatus } from './entities/invoice.entity';
+import { ExpenseStatus } from './entities/expense.entity';
 
 @ApiTags('finance')
 @Controller('finance')
@@ -173,5 +175,84 @@ export class FinanceController {
   @ApiOperation({ summary: 'Convert currency' })
   async convertCurrency(@Body() dto: ConvertCurrencyDto) {
     return this.financeService.convertCurrency(dto);
+  }
+
+  // Expense endpoints
+  @Post('expenses')
+  @ApiOperation({ summary: 'Create new expense' })
+  async createExpense(@Body() dto: CreateExpenseDto, @Request() req) {
+    return this.financeService.createExpense(dto, req.user);
+  }
+
+  @Get('expenses')
+  @ApiOperation({ summary: 'Get expenses' })
+  async getExpenses(
+    @Query('status') status?: ExpenseStatus,
+    @Query('category') category?: string,
+    @Query('jobId') jobId?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+    @Query('submittedById') submittedById?: string,
+  ) {
+    return this.financeService.getExpenses({
+      status,
+      category,
+      jobId,
+      startDate: startDate ? new Date(startDate) : undefined,
+      endDate: endDate ? new Date(endDate) : undefined,
+      submittedById,
+    });
+  }
+
+  @Get('expenses/summary')
+  @ApiOperation({ summary: 'Get expense summary' })
+  async getExpenseSummary(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.financeService.getExpenseSummary(
+      new Date(startDate),
+      new Date(endDate),
+    );
+  }
+
+  @Get('expenses/:id')
+  @ApiOperation({ summary: 'Get expense by ID' })
+  async getExpense(@Param('id') id: string) {
+    return this.financeService.getExpenseById(id);
+  }
+
+  @Put('expenses/:id')
+  @ApiOperation({ summary: 'Update expense' })
+  async updateExpense(@Param('id') id: string, @Body() dto: UpdateExpenseDto) {
+    return this.financeService.updateExpense(id, dto);
+  }
+
+  @Post('expenses/:id/approve')
+  @Roles('admin', 'manager')
+  @ApiOperation({ summary: 'Approve expense' })
+  async approveExpense(@Param('id') id: string, @Body() dto: ApproveExpenseDto, @Request() req) {
+    return this.financeService.approveExpense(id, dto, req.user);
+  }
+
+  @Post('expenses/:id/reject')
+  @Roles('admin', 'manager')
+  @ApiOperation({ summary: 'Reject expense' })
+  async rejectExpense(@Param('id') id: string, @Body() dto: RejectExpenseDto, @Request() req) {
+    return this.financeService.rejectExpense(id, dto, req.user);
+  }
+
+  @Post('expenses/:id/reimburse')
+  @Roles('admin', 'manager')
+  @ApiOperation({ summary: 'Record expense reimbursement' })
+  async recordReimbursement(@Param('id') id: string, @Body() dto: RecordReimbursementDto) {
+    return this.financeService.recordReimbursement(id, dto);
+  }
+
+  @Delete('expenses/:id')
+  @ApiOperation({ summary: 'Delete expense' })
+  async deleteExpense(@Param('id') id: string) {
+    await this.financeService.deleteExpense(id);
+    return { message: 'Expense deleted successfully' };
   }
 }

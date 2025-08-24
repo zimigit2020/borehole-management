@@ -449,6 +449,63 @@ export class MigrationService implements OnModuleInit {
           console.log('⚠ exchange_rates table might already exist');
         }
 
+        // Create expenses table if it doesn't exist
+        const createExpensesTable = `
+          DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'expenses_category_enum') THEN
+              CREATE TYPE "expenses_category_enum" AS ENUM('fuel', 'materials', 'labor', 'equipment', 'transport', 'accommodation', 'meals', 'office_supplies', 'utilities', 'maintenance', 'insurance', 'permits', 'professional_fees', 'marketing', 'miscellaneous');
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'expenses_status_enum') THEN
+              CREATE TYPE "expenses_status_enum" AS ENUM('pending', 'approved', 'rejected', 'reimbursed');
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'expenses_paymentmethod_enum') THEN
+              CREATE TYPE "expenses_paymentmethod_enum" AS ENUM('cash', 'credit_card', 'debit_card', 'bank_transfer', 'cheque', 'mobile_money', 'company_card', 'personal_expense');
+            END IF;
+          END $$;
+          
+          CREATE TABLE IF NOT EXISTS "expenses" (
+            "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+            "description" VARCHAR NOT NULL,
+            "category" "expenses_category_enum" NOT NULL,
+            "amount" DECIMAL(10,2) NOT NULL,
+            "currency" VARCHAR DEFAULT 'USD',
+            "exchangeRate" DECIMAL(10,6) DEFAULT 1,
+            "amountInBaseCurrency" DECIMAL(10,2) NOT NULL,
+            "expenseDate" TIMESTAMP NOT NULL,
+            "paymentMethod" "expenses_paymentmethod_enum",
+            "vendor" VARCHAR,
+            "vendorInvoiceNumber" VARCHAR,
+            "receiptNumber" VARCHAR,
+            "jobId" uuid,
+            "notes" TEXT,
+            "tags" text[],
+            "status" "expenses_status_enum" NOT NULL DEFAULT 'pending',
+            "submittedById" uuid NOT NULL,
+            "submittedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "approvedById" uuid,
+            "approvedAt" TIMESTAMP,
+            "approvalNotes" TEXT,
+            "rejectedById" uuid,
+            "rejectedAt" TIMESTAMP,
+            "rejectionReason" TEXT,
+            "isRecurring" BOOLEAN DEFAULT false,
+            "recurringFrequency" VARCHAR,
+            "requiresReimbursement" BOOLEAN DEFAULT false,
+            "reimbursedAt" TIMESTAMP,
+            "reimbursementReference" VARCHAR,
+            "attachments" TEXT,
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          )
+        `;
+
+        try {
+          await queryRunner.query(createExpensesTable);
+          console.log('✓ Created expenses table');
+        } catch (error) {
+          console.log('⚠ expenses table might already exist');
+        }
+
         console.log('✅ Database migrations completed');
       } finally {
         // Release the query runner
