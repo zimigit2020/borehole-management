@@ -9,7 +9,7 @@ import { StockInDto, StockOutDto, ReserveStockDto, AdjustStockDto } from './dto/
 import { MovementType } from './entities/inventory-movement.entity';
 
 @ApiTags('inventory')
-@Controller('api/v1/inventory')
+@Controller('inventory')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class InventoryController {

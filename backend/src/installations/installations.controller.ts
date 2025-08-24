@@ -8,7 +8,7 @@ import { CreateInstallationDto, UpdateInstallationDto } from './dto/create-insta
 import { InstallationStatus } from './entities/installation.entity';
 
 @ApiTags('installations')
-@Controller('api/v1/installations')
+@Controller('installations')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class InstallationsController {

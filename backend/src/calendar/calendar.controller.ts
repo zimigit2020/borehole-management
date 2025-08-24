@@ -27,7 +27,7 @@ import {
 import { CalendarEvent, CalendarSyncSettings } from './entities/calendar-event.entity';
 
 @ApiTags('calendar')
-@Controller('api/v1/calendar')
+@Controller('calendar')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class CalendarController {

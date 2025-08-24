@@ -10,7 +10,7 @@ import { CreateExchangeRateDto, UpdateExchangeRateDto, ConvertCurrencyDto } from
 import { InvoiceStatus } from './entities/invoice.entity';
 
 @ApiTags('finance')
-@Controller('api/v1/finance')
+@Controller('finance')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class FinanceController {
