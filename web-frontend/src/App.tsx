@@ -17,6 +17,7 @@ import InstallationManagement from './pages/Installations/InstallationManagement
 import FinanceManagement from './pages/Finance/FinanceManagement';
 import DrillingOperations from './pages/Drilling/DrillingOperations';
 import DrillingReportForm from './pages/Drilling/DrillingReportForm';
+import CalendarManagement from './pages/Calendar/CalendarManagement';
 
 const theme = createTheme({
   palette: {
@@ -126,6 +127,7 @@ function App() {
               <Route path="inventory" element={<InventoryManagement />} />
               <Route path="installations" element={<InstallationManagement />} />
               <Route path="finance" element={<FinanceManagement />} />
+              <Route path="calendar" element={<CalendarManagement />} />
               <Route path="reports" element={<div>Analytics (Coming Soon)</div>} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
