@@ -4,6 +4,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
+// Set timezone to Africa/Harare (Zimbabwe)
+process.env.TZ = 'Africa/Harare';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
