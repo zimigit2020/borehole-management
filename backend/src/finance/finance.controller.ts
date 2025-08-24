@@ -24,6 +24,18 @@ export class FinanceController {
     return this.financeService.createInvoice(dto, req.user);
   }
 
+  @Get('invoices/overdue')
+  @ApiOperation({ summary: 'Get overdue invoices' })
+  async getOverdueInvoices() {
+    return this.financeService.getOverdueInvoices();
+  }
+
+  @Get('invoices/:id')
+  @ApiOperation({ summary: 'Get invoice by ID' })
+  async findOneInvoice(@Param('id') id: string) {
+    return this.financeService.findOneInvoice(id);
+  }
+
   @Get('invoices')
   @ApiOperation({ summary: 'Get all invoices' })
   async findAllInvoices(
@@ -38,18 +50,6 @@ export class FinanceController {
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,
     });
-  }
-
-  @Get('invoices/overdue')
-  @ApiOperation({ summary: 'Get overdue invoices' })
-  async getOverdueInvoices() {
-    return this.financeService.getOverdueInvoices();
-  }
-
-  @Get('invoices/:id')
-  @ApiOperation({ summary: 'Get invoice by ID' })
-  async findOneInvoice(@Param('id') id: string) {
-    return this.financeService.findOneInvoice(id);
   }
 
   @Put('invoices/:id')
