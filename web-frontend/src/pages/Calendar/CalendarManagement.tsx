@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Box,
   Paper,
-  Grid,
   Typography,
   Button,
   IconButton,
@@ -35,6 +34,7 @@ import {
   CardContent,
   Divider,
 } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import {
   Add as AddIcon,
   Edit as EditIcon,
