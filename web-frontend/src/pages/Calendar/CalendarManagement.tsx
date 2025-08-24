@@ -140,6 +140,11 @@ const CalendarManagement: React.FC = () => {
     reminders: [],
   });
 
+  // Helper function to show snackbar
+  const showSnackbar = useCallback((message: string, severity: 'success' | 'error') => {
+    setSnackbar({ open: true, message, severity });
+  }, []);
+
   // Load events
   const loadEvents = useCallback(async () => {
     try {
@@ -149,14 +154,16 @@ const CalendarManagement: React.FC = () => {
       if (filterStatus) params.status = filterStatus;
       
       const data = await calendarService.getEvents(params);
-      setEvents(data);
-    } catch (error) {
+      setEvents(data || []); // Ensure we always set an array
+    } catch (error: any) {
       console.error('Failed to load events:', error);
-      showSnackbar('Failed to load calendar events', 'error');
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to load calendar events';
+      showSnackbar(errorMessage, 'error');
+      setEvents([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
-  }, [filterType, filterStatus]);
+  }, [filterType, filterStatus, showSnackbar]);
 
   // Load sync settings
   const loadSyncSettings = async () => {
@@ -195,10 +202,6 @@ const CalendarManagement: React.FC = () => {
     loadTeamAvailability();
     loadStatistics();
   }, [loadEvents]);
-
-  const showSnackbar = (message: string, severity: 'success' | 'error') => {
-    setSnackbar({ open: true, message, severity });
-  };
 
   // Handle calendar event click
   const handleEventClick = (clickInfo: any) => {
