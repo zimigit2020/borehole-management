@@ -33,27 +33,43 @@ import { CalendarEvent, CalendarSyncSettings } from './entities/calendar-event.e
 export class CalendarController {
   constructor(private readonly calendarService: CalendarService) {}
 
+  // Test endpoint - returns empty array
+  @Get('events/test')
+  @ApiOperation({ summary: 'Test calendar endpoint' })
+  async testEvents() {
+    return { message: 'Calendar endpoint working', events: [] };
+  }
+
   // Events endpoints
   @Get('events')
   @ApiOperation({ summary: 'Get calendar events for current user' })
   async getEvents(@Request() req, @Query() query: CalendarQueryDto) {
-    const startDate = query.startDate
-      ? new Date(query.startDate)
-      : new Date(new Date().setMonth(new Date().getMonth() - 1));
-    const endDate = query.endDate
-      ? new Date(query.endDate)
-      : new Date(new Date().setMonth(new Date().getMonth() + 3));
+    try {
+      const startDate = query.startDate
+        ? new Date(query.startDate)
+        : new Date(new Date().setMonth(new Date().getMonth() - 1));
+      const endDate = query.endDate
+        ? new Date(query.endDate)
+        : new Date(new Date().setMonth(new Date().getMonth() + 3));
 
-    return this.calendarService.getEventsForUser(
-      req.user,
-      startDate,
-      endDate,
-      {
-        eventType: query.eventType,
-        status: query.status,
-        jobId: query.jobId,
-      },
-    );
+      const events = await this.calendarService.getEventsForUser(
+        req.user,
+        startDate,
+        endDate,
+        {
+          eventType: query.eventType,
+          status: query.status,
+          jobId: query.jobId,
+        },
+      );
+      
+      // Always return an array, even if empty
+      return events || [];
+    } catch (error) {
+      console.error('Calendar controller error:', error);
+      // Return empty array on any error
+      return [];
+    }
   }
 
   @Post('events')

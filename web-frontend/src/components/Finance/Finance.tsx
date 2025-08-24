@@ -192,13 +192,24 @@ const Finance: React.FC = () => {
               >
                 Exchange Rates
               </Button>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => setCreateInvoiceOpen(true)}
-              >
-                Create Invoice
-              </Button>
+              {activeTab === 0 && (
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => setCreateInvoiceOpen(true)}
+                >
+                  Create Invoice
+                </Button>
+              )}
+              {activeTab === 1 && selectedInvoice && (
+                <Button
+                  variant="contained"
+                  startIcon={<PaymentIcon />}
+                  onClick={() => handleRecordPayment(selectedInvoice)}
+                >
+                  Record Payment
+                </Button>
+              )}
             </>
           )}
         </Box>
