@@ -33,8 +33,8 @@ import {
   Card,
   CardContent,
   Divider,
-  Grid,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -409,9 +409,9 @@ const CalendarManagement: React.FC = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ p: 3 }}>
-        <Grid container spacing={3}>
+        <Grid2 container spacing={3}>
           {/* Header */}
-          <Grid item xs={12}>
+          <Grid2 size={12}>
             <Paper sx={{ p: 2 }}>
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h5" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -465,13 +465,13 @@ const CalendarManagement: React.FC = () => {
                 </Box>
               </Box>
             </Paper>
-          </Grid>
+          </Grid2>
 
           {/* Statistics Cards */}
           {statistics && (
-            <Grid item xs={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
+            <Grid2 size={12}>
+              <Grid2 container spacing={2}>
+                <Grid2 size={{ xs: 12, md: 3 }}>
                   <Card>
                     <CardContent>
                       <Typography color="textSecondary" gutterBottom>
@@ -482,8 +482,8 @@ const CalendarManagement: React.FC = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, md: 3 }}>
                   <Card>
                     <CardContent>
                       <Typography color="textSecondary" gutterBottom>
@@ -494,8 +494,8 @@ const CalendarManagement: React.FC = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, md: 3 }}>
                   <Card>
                     <CardContent>
                       <Typography color="textSecondary" gutterBottom>
@@ -506,8 +506,8 @@ const CalendarManagement: React.FC = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, md: 3 }}>
                   <Card>
                     <CardContent>
                       <Typography color="textSecondary" gutterBottom>
@@ -518,13 +518,13 @@ const CalendarManagement: React.FC = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                </Grid>
-              </Grid>
-            </Grid>
+                </Grid2>
+              </Grid2>
+            </Grid2>
           )}
 
           {/* Main Content */}
-          <Grid item xs={12}>
+          <Grid2 size={12}>
             <Paper>
               <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)}>
                 <Tab label="Calendar View" />
@@ -555,8 +555,8 @@ const CalendarManagement: React.FC = () => {
               </TabPanel>
 
               <TabPanel value={tabValue} index={1}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
+                <Grid2 container spacing={3}>
+                  <Grid2 size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth>
                       <InputLabel>Event Type Filter</InputLabel>
                       <Select
@@ -575,8 +575,8 @@ const CalendarManagement: React.FC = () => {
                         ))}
                       </Select>
                     </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
+                  </Grid2>
+                  <Grid2 size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth>
                       <InputLabel>Status Filter</InputLabel>
                       <Select
@@ -592,8 +592,8 @@ const CalendarManagement: React.FC = () => {
                         ))}
                       </Select>
                     </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
+                  </Grid2>
+                  <Grid2 size={12}>
                     <Button
                       variant="contained"
                       startIcon={<RefreshIcon />}
@@ -601,20 +601,20 @@ const CalendarManagement: React.FC = () => {
                     >
                       Apply Filters
                     </Button>
-                  </Grid>
-                </Grid>
+                  </Grid2>
+                </Grid2>
               </TabPanel>
 
               <TabPanel value={tabValue} index={2}>
                 {teamAvailability && (
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                  <Grid2 container spacing={2}>
+                    <Grid2 size={12}>
                       <Typography variant="h6" gutterBottom>
                         Team Availability for {teamAvailability.date}
                       </Typography>
-                    </Grid>
+                    </Grid2>
                     {teamAvailability.teams.map((team: any) => (
-                      <Grid item xs={12} md={6} key={team.id}>
+                      <Grid2 size={{ xs: 12, md: 6 }} key={team.id}>
                         <Card>
                           <CardContent>
                             <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -632,14 +632,14 @@ const CalendarManagement: React.FC = () => {
                             </Box>
                           </CardContent>
                         </Card>
-                      </Grid>
+                      </Grid2>
                     ))}
-                  </Grid>
+                  </Grid2>
                 )}
               </TabPanel>
             </Paper>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
 
         {/* Event Dialog */}
         <Dialog open={openEventDialog} onClose={() => setOpenEventDialog(false)} maxWidth="md" fullWidth>
@@ -647,16 +647,16 @@ const CalendarManagement: React.FC = () => {
             {selectedEvent ? 'Edit Event' : 'New Event'}
           </DialogTitle>
           <DialogContent>
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid item xs={12}>
+            <Grid2 container spacing={2} sx={{ mt: 1 }}>
+              <Grid2 size={12}>
                 <TextField
                   fullWidth
                   label="Title"
                   value={eventForm.title}
                   onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
                 />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid2>
+              <Grid2 size={12}>
                 <TextField
                   fullWidth
                   label="Description"
@@ -665,8 +665,8 @@ const CalendarManagement: React.FC = () => {
                   value={eventForm.description}
                   onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
                 />
-              </Grid>
-              <Grid item xs={12} md={6}>
+              </Grid2>
+              <Grid2 size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth>
                   <InputLabel>Event Type</InputLabel>
                   <Select
@@ -681,8 +681,8 @@ const CalendarManagement: React.FC = () => {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
+              </Grid2>
+              <Grid2 size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth>
                   <InputLabel>Status</InputLabel>
                   <Select
@@ -697,24 +697,24 @@ const CalendarManagement: React.FC = () => {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
+              </Grid2>
+              <Grid2 size={{ xs: 12, md: 6 }}>
                 <DatePicker
                   label="Start Date"
                   value={parseISO(eventForm.startDate)}
                   onChange={(date) => date && setEventForm({ ...eventForm, startDate: date.toISOString() })}
                   sx={{ width: '100%' }}
                 />
-              </Grid>
-              <Grid item xs={12} md={6}>
+              </Grid2>
+              <Grid2 size={{ xs: 12, md: 6 }}>
                 <DatePicker
                   label="End Date"
                   value={parseISO(eventForm.endDate)}
                   onChange={(date) => date && setEventForm({ ...eventForm, endDate: date.toISOString() })}
                   sx={{ width: '100%' }}
                 />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid2>
+              <Grid2 size={12}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -724,8 +724,8 @@ const CalendarManagement: React.FC = () => {
                   }
                   label="All Day Event"
                 />
-              </Grid>
-              <Grid item xs={12}>
+              </Grid2>
+              <Grid2 size={12}>
                 <TextField
                   fullWidth
                   label="Location"
@@ -735,9 +735,9 @@ const CalendarManagement: React.FC = () => {
                     startAdornment: <LocationIcon sx={{ mr: 1, color: 'action.active' }} />,
                   }}
                 />
-              </Grid>
+              </Grid2>
               {selectedEvent?.hasConflict && (
-                <Grid item xs={12}>
+                <Grid2 size={12}>
                   <Alert severity="warning" action={
                     <Button size="small" onClick={handleCheckConflicts}>
                       View Conflicts
@@ -745,9 +745,9 @@ const CalendarManagement: React.FC = () => {
                   }>
                     This event has conflicts with other events
                   </Alert>
-                </Grid>
+                </Grid2>
               )}
-            </Grid>
+            </Grid2>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenEventDialog(false)}>Cancel</Button>
@@ -766,9 +766,9 @@ const CalendarManagement: React.FC = () => {
         <Dialog open={openSyncDialog} onClose={() => setOpenSyncDialog(false)} maxWidth="md" fullWidth>
           <DialogTitle>Calendar Sync Settings</DialogTitle>
           <DialogContent>
-            <Grid container spacing={3} sx={{ mt: 1 }}>
+            <Grid2 container spacing={3} sx={{ mt: 1 }}>
               {/* Google Calendar */}
-              <Grid item xs={12}>
+              <Grid2 size={12}>
                 <Card>
                   <CardContent>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -793,10 +793,10 @@ const CalendarManagement: React.FC = () => {
                     </Box>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Grid2>
 
               {/* CalDAV (Apple/Outlook) */}
-              <Grid item xs={12}>
+              <Grid2 size={12}>
                 <Card>
                   <CardContent>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -815,10 +815,10 @@ const CalendarManagement: React.FC = () => {
                     </Box>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Grid2>
 
               {/* iCal Feed */}
-              <Grid item xs={12}>
+              <Grid2 size={12}>
                 <Card>
                   <CardContent>
                     <Box>
@@ -844,10 +844,10 @@ const CalendarManagement: React.FC = () => {
                     </Box>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Grid2>
 
               {/* Sync Preferences */}
-              <Grid item xs={12}>
+              <Grid2 size={12}>
                 <Typography variant="h6" gutterBottom>
                   Sync Preferences
                 </Typography>
@@ -895,8 +895,8 @@ const CalendarManagement: React.FC = () => {
                     </ListItemSecondaryAction>
                   </ListItem>
                 </List>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenSyncDialog(false)}>Close</Button>

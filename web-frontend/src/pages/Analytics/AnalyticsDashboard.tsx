@@ -25,8 +25,8 @@ import {
   Stack,
   Alert,
   Avatar,
-  Grid,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
   Download as DownloadIcon,
   TrendingUp as TrendingUpIcon,
@@ -389,9 +389,9 @@ const AnalyticsDashboard: React.FC = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Grid container spacing={3}>
+      <Grid2 container spacing={3}>
         {/* Header */}
-        <Grid item xs={12}>
+        <Grid2 size={12}>
           <Paper sx={{ p: 2 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="h5" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -436,10 +436,10 @@ const AnalyticsDashboard: React.FC = () => {
               </Box>
             </Box>
           </Paper>
-        </Grid>
+        </Grid2>
 
         {/* Key Metrics Cards */}
-        <Grid item xs={12} md={3}>
+        <Grid2 size={{ xs: 12, md: 3 }}>
           <Card>
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -458,9 +458,9 @@ const AnalyticsDashboard: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </Grid2>
 
-        <Grid item xs={12} md={3}>
+        <Grid2 size={{ xs: 12, md: 3 }}>
           <Card>
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -482,9 +482,9 @@ const AnalyticsDashboard: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </Grid2>
 
-        <Grid item xs={12} md={3}>
+        <Grid2 size={{ xs: 12, md: 3 }}>
           <Card>
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -505,9 +505,9 @@ const AnalyticsDashboard: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </Grid2>
 
-        <Grid item xs={12} md={3}>
+        <Grid2 size={{ xs: 12, md: 3 }}>
           <Card>
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -526,10 +526,10 @@ const AnalyticsDashboard: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </Grid2>
 
         {/* Main Analytics Content */}
-        <Grid item xs={12}>
+        <Grid2 size={12}>
           <Paper>
             <Tabs
               value={tabValue}
@@ -546,9 +546,9 @@ const AnalyticsDashboard: React.FC = () => {
 
             {/* Operations Tab */}
             <TabPanel value={tabValue} index={0}>
-              <Grid container spacing={3}>
+              <Grid2 container spacing={3}>
                 {/* Job Trends Chart */}
-                <Grid item xs={12} lg={8}>
+                <Grid2 size={{ xs: 12, lg: 8 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -568,10 +568,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Job Status Distribution */}
-                <Grid item xs={12} lg={4}>
+                <Grid2 size={{ xs: 12, lg: 4 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -599,10 +599,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Jobs by Type */}
-                <Grid item xs={12} lg={6}>
+                <Grid2 size={{ xs: 12, lg: 6 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -619,10 +619,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Jobs by Location Table */}
-                <Grid item xs={12} lg={6}>
+                <Grid2 size={{ xs: 12, lg: 6 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -655,15 +655,15 @@ const AnalyticsDashboard: React.FC = () => {
                       </TableContainer>
                     </CardContent>
                   </Card>
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             </TabPanel>
 
             {/* Financial Tab */}
             <TabPanel value={tabValue} index={1}>
-              <Grid container spacing={3}>
+              <Grid2 container spacing={3}>
                 {/* Revenue vs Expenses Chart */}
-                <Grid item xs={12} lg={8}>
+                <Grid2 size={{ xs: 12, lg: 8 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -683,10 +683,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Expense Breakdown */}
-                <Grid item xs={12} lg={4}>
+                <Grid2 size={{ xs: 12, lg: 4 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -714,10 +714,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Cash Flow */}
-                <Grid item xs={12} lg={6}>
+                <Grid2 size={{ xs: 12, lg: 6 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -736,10 +736,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Outstanding Invoices */}
-                <Grid item xs={12} lg={6}>
+                <Grid2 size={{ xs: 12, lg: 6 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -773,10 +773,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </TableContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Profit Margins */}
-                <Grid item xs={12}>
+                <Grid2 size={12}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -797,15 +797,15 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             </TabPanel>
 
             {/* Inventory Tab */}
             <TabPanel value={tabValue} index={2}>
-              <Grid container spacing={3}>
+              <Grid2 container spacing={3}>
                 {/* Current Stock Levels */}
-                <Grid item xs={12} lg={8}>
+                <Grid2 size={{ xs: 12, lg: 8 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -856,10 +856,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </TableContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Low Stock Alerts */}
-                <Grid item xs={12} lg={4}>
+                <Grid2 size={{ xs: 12, lg: 4 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -881,10 +881,10 @@ const AnalyticsDashboard: React.FC = () => {
                       )}
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Inventory Turnover */}
-                <Grid item xs={12} lg={6}>
+                <Grid2 size={{ xs: 12, lg: 6 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -901,10 +901,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Recent Stock Movements */}
-                <Grid item xs={12} lg={6}>
+                <Grid2 size={{ xs: 12, lg: 6 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -942,15 +942,15 @@ const AnalyticsDashboard: React.FC = () => {
                       </TableContainer>
                     </CardContent>
                   </Card>
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             </TabPanel>
 
             {/* Team Performance Tab */}
             <TabPanel value={tabValue} index={3}>
-              <Grid container spacing={3}>
+              <Grid2 container spacing={3}>
                 {/* Team Productivity */}
-                <Grid item xs={12} lg={8}>
+                <Grid2 size={{ xs: 12, lg: 8 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -1000,10 +1000,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </TableContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Performance Metrics */}
-                <Grid item xs={12} lg={4}>
+                <Grid2 size={{ xs: 12, lg: 4 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -1031,10 +1031,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </Stack>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Team Workload */}
-                <Grid item xs={12}>
+                <Grid2 size={12}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -1053,15 +1053,15 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             </TabPanel>
 
             {/* Installations Tab */}
             <TabPanel value={tabValue} index={4}>
-              <Grid container spacing={3}>
+              <Grid2 container spacing={3}>
                 {/* Installation Metrics */}
-                <Grid item xs={12} lg={6}>
+                <Grid2 size={{ xs: 12, lg: 6 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -1081,10 +1081,10 @@ const AnalyticsDashboard: React.FC = () => {
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Maintenance Schedule */}
-                <Grid item xs={12} lg={6}>
+                <Grid2 size={{ xs: 12, lg: 6 }}>
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -1120,12 +1120,12 @@ const AnalyticsDashboard: React.FC = () => {
                       </TableContainer>
                     </CardContent>
                   </Card>
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             </TabPanel>
           </Paper>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Box>
   );
 };
