@@ -47,6 +47,22 @@ export class Job {
   @Column('decimal', { precision: 10, scale: 2, nullable: true })
   budgetUsd: number;
 
+  @Column('decimal', { precision: 10, scale: 2, nullable: true })
+  quotedAmount: number;
+
+  @Column({ nullable: true })
+  completedAt: Date;
+
+  @Column({ nullable: true })
+  jobNumber: string;
+
+  @Column({ nullable: true })
+  clientId: string;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'clientId' })
+  client: User;
+
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'assignedSurveyorId' })
   assignedSurveyor: User;

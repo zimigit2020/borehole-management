@@ -27,6 +27,10 @@ export class MigrationService implements OnModuleInit {
           { name: 'drillingCompletedAt', type: 'TIMESTAMP' },
           { name: 'drillingResults', type: 'json' },
           { name: 'surveyResults', type: 'json' },
+          { name: 'quotedAmount', type: 'DECIMAL(10,2)' },
+          { name: 'completedAt', type: 'TIMESTAMP' },
+          { name: 'jobNumber', type: 'VARCHAR' },
+          { name: 'clientId', type: 'VARCHAR' },
         ];
 
         for (const column of jobColumns) {

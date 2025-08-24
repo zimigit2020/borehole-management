@@ -4,13 +4,28 @@ import { MulterModule } from '@nestjs/platform-express';
 import { Job } from './job.entity';
 import { JobsService } from './jobs.service';
 import { JobWorkflowService } from './workflow/job-workflow.service';
+import { JobCostingService } from './job-costing.service';
 import { JobsController } from './jobs.controller';
+import { JobCostingController } from './job-costing.controller';
 import { UsersModule } from '../users/users.module';
+import { Invoice, InvoiceItem, Payment } from '../finance/entities/invoice.entity';
+import { Expense } from '../finance/entities/expense.entity';
+import { InventoryMovement } from '../inventory/entities/inventory-movement.entity';
+import { PurchaseOrder, PurchaseOrderItem } from '../inventory/entities/purchase-order.entity';
 import { memoryStorage } from 'multer';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Job]),
+    TypeOrmModule.forFeature([
+      Job,
+      Invoice,
+      InvoiceItem,
+      Payment,
+      Expense,
+      InventoryMovement,
+      PurchaseOrder,
+      PurchaseOrderItem,
+    ]),
     UsersModule,
     MulterModule.register({
       storage: memoryStorage(),
@@ -24,8 +39,8 @@ import { memoryStorage } from 'multer';
       },
     }),
   ],
-  controllers: [JobsController],
-  providers: [JobsService, JobWorkflowService],
-  exports: [JobsService, JobWorkflowService],
+  controllers: [JobsController, JobCostingController],
+  providers: [JobsService, JobWorkflowService, JobCostingService],
+  exports: [JobsService, JobWorkflowService, JobCostingService],
 })
 export class JobsModule {}
