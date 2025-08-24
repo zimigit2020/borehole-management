@@ -338,6 +338,116 @@ export class MigrationService implements OnModuleInit {
           console.log('⚠ payments table might already exist');
         }
 
+        // Create calendar tables if they don't exist
+        const createCalendarEventsTable = `
+          DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'calendar_events_eventtype_enum') THEN
+              CREATE TYPE "calendar_events_eventtype_enum" AS ENUM('drilling', 'survey', 'installation', 'maintenance', 'payment_due', 'invoice_follow_up', 'payment_milestone', 'stock_delivery', 'stock_reorder', 'equipment_return', 'inventory_audit', 'meeting', 'review', 'planning', 'reminder', 'deadline', 'other');
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'calendar_events_status_enum') THEN
+              CREATE TYPE "calendar_events_status_enum" AS ENUM('tentative', 'confirmed', 'cancelled', 'completed', 'in_progress');
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'calendar_events_visibility_enum') THEN
+              CREATE TYPE "calendar_events_visibility_enum" AS ENUM('public', 'private', 'role_based', 'management');
+            END IF;
+          END $$;
+          
+          CREATE TABLE IF NOT EXISTS "calendar_events" (
+            "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+            "title" VARCHAR NOT NULL,
+            "description" TEXT,
+            "eventType" "calendar_events_eventtype_enum" NOT NULL DEFAULT 'other',
+            "status" "calendar_events_status_enum" NOT NULL DEFAULT 'confirmed',
+            "visibility" "calendar_events_visibility_enum" NOT NULL DEFAULT 'public',
+            "startDate" TIMESTAMP NOT NULL,
+            "endDate" TIMESTAMP NOT NULL,
+            "allDay" BOOLEAN DEFAULT false,
+            "location" VARCHAR,
+            "gpsCoordinates" jsonb,
+            "color" VARCHAR,
+            "recurrenceRule" VARCHAR,
+            "recurrenceId" VARCHAR,
+            "reminders" jsonb,
+            "allowedRoles" text[],
+            "requiredRoles" text[],
+            "metadata" jsonb,
+            "conflictsWith" text[],
+            "hasConflict" BOOLEAN DEFAULT false,
+            "googleEventId" VARCHAR,
+            "appleEventId" VARCHAR,
+            "outlookEventId" VARCHAR,
+            "lastSyncedAt" TIMESTAMP,
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "createdById" uuid,
+            "jobId" uuid,
+            "installationId" uuid,
+            "invoiceId" uuid
+          )
+        `;
+
+        const createCalendarSyncSettingsTable = `
+          DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'calendar_sync_settings_syncdirection_enum') THEN
+              CREATE TYPE "calendar_sync_settings_syncdirection_enum" AS ENUM('one-way', 'two-way');
+            END IF;
+          END $$;
+          
+          CREATE TABLE IF NOT EXISTS "calendar_sync_settings" (
+            "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+            "syncEnabled" BOOLEAN DEFAULT false,
+            "syncDirection" "calendar_sync_settings_syncdirection_enum" DEFAULT 'one-way',
+            "googleCalendar" jsonb,
+            "appleCalendar" jsonb,
+            "outlookCalendar" jsonb,
+            "syncPreferences" jsonb,
+            "syncRules" jsonb,
+            "caldavToken" VARCHAR,
+            "lastSyncedAt" TIMESTAMP,
+            "lastSyncError" TEXT,
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "userId" uuid UNIQUE
+          )
+        `;
+
+        try {
+          await queryRunner.query(createCalendarEventsTable);
+          console.log('✓ Created calendar_events table');
+        } catch (error) {
+          console.log('⚠ calendar_events table might already exist');
+        }
+
+        try {
+          await queryRunner.query(createCalendarSyncSettingsTable);
+          console.log('✓ Created calendar_sync_settings table');
+        } catch (error) {
+          console.log('⚠ calendar_sync_settings table might already exist');
+        }
+
+        // Create exchange_rates table if it doesn't exist
+        const createExchangeRatesTable = `
+          CREATE TABLE IF NOT EXISTS "exchange_rates" (
+            "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+            "fromCurrency" VARCHAR NOT NULL,
+            "toCurrency" VARCHAR NOT NULL,
+            "rate" DECIMAL(10,6) NOT NULL,
+            "effectiveDate" TIMESTAMP NOT NULL,
+            "source" VARCHAR,
+            "createdById" uuid,
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE("fromCurrency", "toCurrency", "effectiveDate")
+          )
+        `;
+
+        try {
+          await queryRunner.query(createExchangeRatesTable);
+          console.log('✓ Created exchange_rates table');
+        } catch (error) {
+          console.log('⚠ exchange_rates table might already exist');
+        }
+
         console.log('✅ Database migrations completed');
       } finally {
         // Release the query runner
