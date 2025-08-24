@@ -47,7 +47,7 @@ export class CalendarService {
       case UserRole.SURVEYOR:
         // Specialists see only their assigned work
         query.andWhere(
-          '(event.createdById = :userId OR :userId = ANY(attendees.id) OR event.visibility = :public)',
+          '(event.createdById = :userId OR attendees.id = :userId OR event.visibility = :public)',
           {
             userId: user.id,
             public: EventVisibility.PUBLIC,

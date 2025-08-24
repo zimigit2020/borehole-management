@@ -379,6 +379,7 @@ export class MigrationService implements OnModuleInit {
             "lastSyncedAt" TIMESTAMP,
             "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "deletedAt" TIMESTAMP,
             "createdById" uuid,
             "jobId" uuid,
             "installationId" uuid,
