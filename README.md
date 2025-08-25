@@ -39,6 +39,7 @@ borehole-phase1/
 - Track job progress through multiple stages
 - Assign teams and resources
 - Geographic location tracking with maps
+- **NEW: Job Costing Analysis** - Detailed profitability reports per job
 
 ### 2. **Survey Management**
 - Site assessments and feasibility studies
@@ -53,16 +54,23 @@ borehole-phase1/
 - Equipment and resource allocation
 - Drilling status management
 
-### 4. **Inventory Management** *(New)*
+### 4. **Inventory Management** *(Enhanced)*
 - Stock tracking for drilling materials
 - Low stock alerts and notifications
 - Stock movement history
 - Inventory value reporting
 - Category-based organization
+- **NEW: Purchase Orders Module**
+  - Complete procurement lifecycle
+  - Supplier management and tracking
+  - Partial/full receiving capability
+  - Automatic stock updates on receipt
+  - Approval workflow for purchases
 - API Endpoints:
   - `/api/v1/inventory/items` - CRUD operations
   - `/api/v1/inventory/reports/value` - Total inventory value
   - `/api/v1/inventory/movements` - Stock movements
+  - `/api/v1/purchase-orders` - Purchase order management
 
 ### 5. **Installation/Pump Management** *(New)*
 - Pump installation scheduling
@@ -72,7 +80,7 @@ borehole-phase1/
 - Pump specifications and maintenance
 - Statistics and performance metrics
 
-### 6. **Finance/Invoice Module** *(New)*
+### 6. **Finance Module** *(Significantly Enhanced)*
 - Invoice generation and management
 - Multi-currency support (USD, ZAR, ZWG)
 - Exchange rate management
@@ -80,6 +88,19 @@ borehole-phase1/
 - Financial reporting and analytics
 - Revenue tracking by month
 - Overdue invoice alerts
+- **NEW: Expense Tracking System**
+  - Track expenses by category (fuel, equipment, labor, etc.)
+  - Expense approval workflow
+  - Reimbursement tracking
+  - Job cost allocation
+  - Vendor management
+  - Multi-currency expense support
+- **NEW: Job Costing Reports**
+  - Detailed cost breakdown by category
+  - Profit margin analysis
+  - Cost vs revenue comparison
+  - Visual charts and analytics
+  - Cost efficiency recommendations
 
 ### 7. **User Management**
 - Role-based access control (Admin, Manager, Operator, Technician)
@@ -192,17 +213,21 @@ doctl apps list-deployments 149d723b-4b8d-4f2d-9d94-e4a9f3106b59
 
 ### Key Tables
 - `users` - System users and authentication
-- `jobs` - Borehole drilling jobs
+- `jobs` - Borehole drilling jobs (enhanced with costing fields)
 - `surveys` - Site surveys
 - `drilling_reports` - Daily drilling progress
 - `inventory_items` - Stock items
-- `stock_movements` - Inventory transactions
+- `inventory_movements` - Inventory transactions (enhanced)
+- `purchase_orders` - Purchase order management
+- `purchase_order_items` - PO line items
+- `expenses` - Expense tracking with approval workflow
 - `installations` - Pump installations
-- `pumps` - Pump specifications
 - `invoices` - Financial invoices
 - `invoice_items` - Invoice line items
 - `payments` - Payment records
 - `exchange_rates` - Currency exchange rates
+- `calendar_events` - Scheduling and events
+- `todos` - Task management (in development)
 
 ### Automatic Migrations
 The backend automatically runs TypeORM migrations on startup when `synchronize: true` is set in the database configuration.
@@ -268,7 +293,36 @@ npm test
 
 ## 🔄 Recent Updates (August 2024)
 
-### Version 2.0.0 - Major Feature Release
+### Version 2.1.0 - Financial Enhancement Release (August 25, 2024)
+1. **Expense Tracking System**
+   - Complete expense management with 15+ categories
+   - Manager approval workflow
+   - Reimbursement tracking
+   - Job cost allocation
+   - Vendor invoice tracking
+
+2. **Purchase Order Management**
+   - Full procurement lifecycle
+   - Supplier performance tracking
+   - Partial/full receiving
+   - Automatic inventory updates
+   - Approval workflow
+
+3. **Job Costing Analytics**
+   - Comprehensive profitability analysis
+   - Cost breakdown by category
+   - Visual charts and reports
+   - Profit margin tracking
+   - Cost efficiency recommendations
+   - Integration with expenses and inventory
+
+4. **System Improvements**
+   - Fixed timezone to Africa/Harare
+   - Enhanced UI with tabs for all modules
+   - Improved error handling
+   - Better TypeScript type safety
+
+### Version 2.0.0 - Major Feature Release (August 24, 2024)
 1. **Inventory Management Module**
    - Complete stock tracking system
    - Low stock alerts
@@ -311,7 +365,7 @@ Proprietary - All rights reserved
 ## 🚦 System Status
 - **Production**: https://borehole-frontend-xfjtz.ondigitalocean.app
 - **API Health**: https://borehole-management-nuyvk.ondigitalocean.app/api/v1/health
-- **Last Deployment**: August 24, 2024 (commit d09bd41)
+- **Last Deployment**: August 25, 2024 (commit 350adf4)
 
 ## 📱 Mobile Responsiveness
 The frontend is fully responsive and works on:
@@ -327,4 +381,4 @@ System designed for operations in:
 - Regional expansion ready
 
 ---
-*Last Updated: August 24, 2024*
+*Last Updated: August 25, 2024*
