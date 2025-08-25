@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -139,6 +140,7 @@ interface DrillingJob {
 }
 
 const DrillingOperations: React.FC = () => {
+  const navigate = useNavigate();
   const [reports, setReports] = useState<DrillingReport[]>([]);
   const [jobs, setJobs] = useState<DrillingJob[]>([]);
   const [filteredReports, setFilteredReports] = useState<DrillingReport[]>([]);
@@ -327,9 +329,15 @@ const DrillingOperations: React.FC = () => {
   };
 
   const handleCreateReport = () => {
-    setSelectedReport(null);
-    setNewReportDialogOpen(true);
-    setActiveStep(0);
+    // Navigate to drilling report form for the active job
+    // For now, use a placeholder job ID or the first drilling job
+    const drillingJob = jobs.find(j => j.status === 'drilling');
+    if (drillingJob) {
+      navigate(`/drilling/report/${drillingJob.id}`);
+    } else {
+      // If no active drilling job, show an alert
+      alert('Please select a job that is currently drilling');
+    }
   };
 
   const handleViewReport = (report: DrillingReport) => {

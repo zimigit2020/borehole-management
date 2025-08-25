@@ -342,6 +342,25 @@ export class MigrationService implements OnModuleInit {
           console.log('⚠ payments table might already exist');
         }
 
+        // Update user roles enum to include new roles
+        try {
+          await queryRunner.query(`
+            DO $$ 
+            BEGIN
+              -- Add new values to the user role enum
+              ALTER TYPE "users_role_enum" ADD VALUE IF NOT EXISTS 'manager';
+              ALTER TYPE "users_role_enum" ADD VALUE IF NOT EXISTS 'finance_manager';
+              ALTER TYPE "users_role_enum" ADD VALUE IF NOT EXISTS 'inventory_manager';
+              ALTER TYPE "users_role_enum" ADD VALUE IF NOT EXISTS 'technician';
+            EXCEPTION
+              WHEN duplicate_object THEN null;
+            END $$;
+          `);
+          console.log('✓ Updated user roles enum');
+        } catch (error) {
+          console.log('⚠ User roles enum update might have failed:', error.message);
+        }
+
         // Create calendar tables if they don't exist
         const createCalendarEventsTable = `
           DO $$ BEGIN

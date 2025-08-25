@@ -60,7 +60,8 @@ export class TodosService {
     if (todo.createdBy.id !== user.id && 
         todo.assignedTo?.id !== user.id && 
         user.role !== UserRole.ADMIN && 
-        user.role !== UserRole.PROJECT_MANAGER) {
+        user.role !== UserRole.MANAGER &&
+        user.role !== UserRole.MANAGER && user.role !== UserRole.PROJECT_MANAGER) {
       throw new ForbiddenException('You do not have access to this todo');
     }
 
@@ -73,7 +74,7 @@ export class TodosService {
     // Check if user can update this todo
     if (todo.createdBy.id !== user.id && 
         user.role !== UserRole.ADMIN && 
-        user.role !== UserRole.PROJECT_MANAGER) {
+        user.role !== UserRole.MANAGER && user.role !== UserRole.PROJECT_MANAGER) {
       throw new ForbiddenException('You can only update your own todos');
     }
 
@@ -94,7 +95,7 @@ export class TodosService {
     // Check if user can delete this todo
     if (todo.createdBy.id !== user.id && 
         user.role !== UserRole.ADMIN && 
-        user.role !== UserRole.PROJECT_MANAGER) {
+        user.role !== UserRole.MANAGER && user.role !== UserRole.PROJECT_MANAGER) {
       throw new ForbiddenException('You can only delete your own todos');
     }
 
@@ -134,7 +135,7 @@ export class TodosService {
     const todo = await this.findOne(id, user);
 
     // Only managers and admins can assign todos
-    if (user.role !== UserRole.ADMIN && user.role !== UserRole.PROJECT_MANAGER) {
+    if (user.role !== UserRole.ADMIN && user.role !== UserRole.MANAGER && user.role !== UserRole.PROJECT_MANAGER) {
       throw new ForbiddenException('Only managers and admins can assign todos');
     }
 

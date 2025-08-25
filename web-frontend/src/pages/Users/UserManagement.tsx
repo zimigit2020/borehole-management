@@ -481,9 +481,13 @@ const UserManagement: React.FC = () => {
                 >
                   <MenuItem value="all">All Roles</MenuItem>
                   <MenuItem value="admin">Admin</MenuItem>
+                  <MenuItem value="manager">Manager</MenuItem>
                   <MenuItem value="project_manager">Project Manager</MenuItem>
+                  <MenuItem value="finance_manager">Finance Manager</MenuItem>
+                  <MenuItem value="inventory_manager">Inventory Manager</MenuItem>
                   <MenuItem value="surveyor">Surveyor</MenuItem>
                   <MenuItem value="driller">Driller</MenuItem>
+                  <MenuItem value="technician">Technician</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -764,9 +768,13 @@ const UserManagement: React.FC = () => {
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                 >
                   <MenuItem value="admin">Admin</MenuItem>
+                  <MenuItem value="manager">Manager</MenuItem>
                   <MenuItem value="project_manager">Project Manager</MenuItem>
+                  <MenuItem value="finance_manager">Finance Manager</MenuItem>
+                  <MenuItem value="inventory_manager">Inventory Manager</MenuItem>
                   <MenuItem value="surveyor">Surveyor</MenuItem>
                   <MenuItem value="driller">Driller</MenuItem>
+                  <MenuItem value="technician">Technician</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
