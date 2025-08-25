@@ -6,10 +6,10 @@ import {
   Typography,
   TextField,
   Button,
-  Grid,
   Alert,
   MenuItem,
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import { ArrowBack, Save } from '@mui/icons-material';
 import jobsService from '../../services/jobs.service';
 
@@ -43,11 +43,17 @@ const JobCreate: React.FC = () => {
     setError(null);
 
     try {
-      const jobData = {
-        ...formData,
-        latitude: formData.latitude ? parseFloat(formData.latitude) : undefined,
-        longitude: formData.longitude ? parseFloat(formData.longitude) : undefined,
-        budgetUsd: formData.budgetUsd ? parseFloat(formData.budgetUsd) : undefined,
+      const jobData: any = {
+        name: formData.name,
+        clientName: formData.clientName,
+        siteName: formData.siteName,
+        latitude: formData.latitude ? parseFloat(formData.latitude) : 0,
+        longitude: formData.longitude ? parseFloat(formData.longitude) : 0,
+        contactPerson: formData.contactPerson,
+        contactPhone: formData.contactPhone,
+        priority: formData.priority as 'low' | 'medium' | 'high',
+        budgetUsd: formData.budgetUsd ? parseFloat(formData.budgetUsd) : 0,
+        notes: formData.accessNotes,
       };
 
       const newJob = await jobsService.createJob(jobData);

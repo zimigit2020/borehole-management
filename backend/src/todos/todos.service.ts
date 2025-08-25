@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Todo } from './entities/todo.entity';
+import { Todo, TodoStatus } from './entities/todo.entity';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
-import { User } from '../users/user.entity';
+import { User, UserRole } from '../users/user.entity';
 
 @Injectable()
 export class TodosService {
@@ -59,8 +59,8 @@ export class TodosService {
     // Check if user has access to this todo
     if (todo.createdBy.id !== user.id && 
         todo.assignedTo?.id !== user.id && 
-        user.role !== 'admin' && 
-        user.role !== 'manager') {
+        user.role !== UserRole.ADMIN && 
+        user.role !== UserRole.PROJECT_MANAGER) {
       throw new ForbiddenException('You do not have access to this todo');
     }
 
@@ -72,8 +72,8 @@ export class TodosService {
 
     // Check if user can update this todo
     if (todo.createdBy.id !== user.id && 
-        user.role !== 'admin' && 
-        user.role !== 'manager') {
+        user.role !== UserRole.ADMIN && 
+        user.role !== UserRole.PROJECT_MANAGER) {
       throw new ForbiddenException('You can only update your own todos');
     }
 
@@ -93,8 +93,8 @@ export class TodosService {
 
     // Check if user can delete this todo
     if (todo.createdBy.id !== user.id && 
-        user.role !== 'admin' && 
-        user.role !== 'manager') {
+        user.role !== UserRole.ADMIN && 
+        user.role !== UserRole.PROJECT_MANAGER) {
       throw new ForbiddenException('You can only delete your own todos');
     }
 
@@ -125,7 +125,7 @@ export class TodosService {
 
   async markAsComplete(id: string, user: User): Promise<Todo> {
     const todo = await this.findOne(id, user);
-    todo.status = 'completed';
+    todo.status = TodoStatus.COMPLETED;
     todo.completedAt = new Date();
     return await this.todosRepository.save(todo);
   }
@@ -134,7 +134,7 @@ export class TodosService {
     const todo = await this.findOne(id, user);
 
     // Only managers and admins can assign todos
-    if (user.role !== 'admin' && user.role !== 'manager') {
+    if (user.role !== UserRole.ADMIN && user.role !== UserRole.PROJECT_MANAGER) {
       throw new ForbiddenException('Only managers and admins can assign todos');
     }
 

@@ -660,7 +660,7 @@ const DrillingOperations: React.FC = () => {
                           // Update job status to drilling
                           const updatedJobs = jobs.map(j => 
                             j.id === job.id 
-                              ? { ...j, status: 'drilling', startDate: new Date().toISOString() }
+                              ? { ...j, status: 'drilling' as const, startDate: new Date().toISOString() }
                               : j
                           );
                           setJobs(updatedJobs);
