@@ -30,6 +30,7 @@ import {
   Inventory,
   AccountBalance,
   CalendarMonth,
+  Build,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -65,6 +66,7 @@ const Layout: React.FC = () => {
     { text: 'Map View', icon: <Map />, path: '/map' },
     { text: 'Survey Reports', icon: <Assignment />, path: '/surveys' },
     { text: 'Drilling Ops', icon: <Work />, path: '/drilling' },
+    { text: 'Installations', icon: <Build />, path: '/installations' },
     { text: 'Calendar', icon: <CalendarMonth />, path: '/calendar' },
     { text: 'Inventory', icon: <Inventory />, path: '/inventory' },
     { text: 'Finance', icon: <AccountBalance />, path: '/finance' },
