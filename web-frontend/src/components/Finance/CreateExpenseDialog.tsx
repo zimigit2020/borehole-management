@@ -89,7 +89,7 @@ const CreateExpenseDialog: React.FC<CreateExpenseDialogProps> = ({
 
   const fetchJobs = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('access_token');
       const response = await fetch(`${process.env.REACT_APP_API_URL}/jobs`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -109,7 +109,7 @@ const CreateExpenseDialog: React.FC<CreateExpenseDialogProps> = ({
     setError('');
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('access_token');
       const url = expense
         ? `${process.env.REACT_APP_API_URL}/finance/expenses/${expense.id}`
         : `${process.env.REACT_APP_API_URL}/finance/expenses`;

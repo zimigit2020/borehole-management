@@ -87,7 +87,7 @@ const JobCostingReport: React.FC<JobCostingReportProps> = ({ jobId: propJobId })
 
   const fetchJobs = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('access_token');
       const response = await fetch(`${process.env.REACT_APP_API_URL}/jobs`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -106,7 +106,7 @@ const JobCostingReport: React.FC<JobCostingReportProps> = ({ jobId: propJobId })
     setLoading(true);
     setError(null);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('access_token');
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/job-costing/report/${jobId}`,
         {

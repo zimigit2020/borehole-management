@@ -366,7 +366,7 @@ const Finance: React.FC = () => {
             onDelete={async (id) => {
               if (window.confirm('Are you sure you want to delete this expense?')) {
                 try {
-                  const token = localStorage.getItem('token');
+                  const token = localStorage.getItem('access_token');
                   await fetch(`${process.env.REACT_APP_API_URL}/finance/expenses/${id}`, {
                     method: 'DELETE',
                     headers: {

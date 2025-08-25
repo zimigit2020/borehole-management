@@ -288,7 +288,7 @@ const UserManagement: React.FC = () => {
     try {
       const newPassword = prompt('Enter new password for this user:');
       if (newPassword && newPassword.length >= 6) {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('access_token');
         const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${selectedUser.id}/password`, {
           method: 'PUT',
           headers: {

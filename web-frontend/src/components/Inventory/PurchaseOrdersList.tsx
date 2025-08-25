@@ -77,7 +77,7 @@ const PurchaseOrdersList: React.FC<PurchaseOrdersListProps> = ({
   const fetchPurchaseOrders = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('access_token');
       const params = new URLSearchParams();
       if (statusFilter !== 'all') params.append('status', statusFilter);
 
