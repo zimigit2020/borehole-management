@@ -7,7 +7,7 @@ import { JobCostingService } from './job-costing.service';
 
 @ApiTags('job-costing')
 @Controller('job-costing')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class JobCostingController {
   constructor(private readonly jobCostingService: JobCostingService) {}
@@ -19,6 +19,7 @@ export class JobCostingController {
   }
 
   @Get('profitability')
+  @UseGuards(RolesGuard)
   @Roles('admin', 'manager')
   @ApiOperation({ summary: 'Get job profitability report' })
   @ApiQuery({ name: 'startDate', required: false })
@@ -40,6 +41,7 @@ export class JobCostingController {
   }
 
   @Get('trends')
+  @UseGuards(RolesGuard)
   @Roles('admin', 'manager')
   @ApiOperation({ summary: 'Get cost trend analysis' })
   @ApiQuery({ name: 'period', enum: ['daily', 'weekly', 'monthly'], required: false })
@@ -58,6 +60,7 @@ export class JobCostingController {
   }
 
   @Get('comparison')
+  @UseGuards(RolesGuard)
   @Roles('admin', 'manager')
   @ApiOperation({ summary: 'Compare costs across multiple jobs' })
   @ApiQuery({ name: 'jobIds', required: true, type: [String] })
@@ -67,6 +70,7 @@ export class JobCostingController {
   }
 
   @Get('client/:clientId')
+  @UseGuards(RolesGuard)
   @Roles('admin', 'manager')
   @ApiOperation({ summary: 'Get client profitability analysis' })
   @ApiQuery({ name: 'startDate', required: false })

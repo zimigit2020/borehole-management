@@ -117,12 +117,15 @@ const JobCostingReport: React.FC<JobCostingReportProps> = ({ jobId: propJobId })
       );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch job costing report');
+        const errorText = await response.text();
+        console.error('Job costing API error:', response.status, errorText);
+        throw new Error(`Failed to fetch job costing report: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
       setReport(data);
     } catch (err: any) {
+      console.error('Error fetching job costing report:', err);
       setError(err.message || 'Failed to load report');
     } finally {
       setLoading(false);
