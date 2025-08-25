@@ -70,6 +70,7 @@ import financeService from '../../services/financeService';
 import inventoryService from '../../services/inventoryService';
 import installationService from '../../services/installationService';
 import { useAuth } from '../../contexts/AuthContext';
+import JobCostingReport from '../../components/Jobs/JobCostingReport';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -542,6 +543,7 @@ const AnalyticsDashboard: React.FC = () => {
               <Tab label="Inventory" icon={<InventoryIcon />} iconPosition="start" />
               <Tab label="Team Performance" icon={<PeopleIcon />} iconPosition="start" />
               <Tab label="Installations" icon={<BuildIcon />} iconPosition="start" />
+              <Tab label="Job Costing" icon={<AssessmentIcon />} iconPosition="start" />
             </Tabs>
 
             {/* Operations Tab */}
@@ -1122,6 +1124,11 @@ const AnalyticsDashboard: React.FC = () => {
                   </Card>
                 </Grid>
               </Grid>
+            </TabPanel>
+
+            {/* Job Costing Tab */}
+            <TabPanel value={tabValue} index={5}>
+              <JobCostingReport />
             </TabPanel>
           </Paper>
         </Grid>

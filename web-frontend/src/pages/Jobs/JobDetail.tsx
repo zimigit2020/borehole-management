@@ -16,6 +16,8 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import {
   ArrowBack,
@@ -29,10 +31,12 @@ import {
   Engineering,
   Assignment,
   Description,
+  Assessment,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import jobsService, { Job } from '../../services/jobs.service';
 import JobWorkflowActions from '../../components/JobWorkflow/JobWorkflowActions';
+import JobCostingReport from '../../components/Jobs/JobCostingReport';
 
 const JobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -40,6 +44,7 @@ const JobDetail: React.FC = () => {
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     if (id) {
@@ -150,7 +155,15 @@ const JobDetail: React.FC = () => {
         </Button>
       </Box>
 
-      <Grid container spacing={3}>
+      <Paper sx={{ mb: 3 }}>
+        <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)}>
+          <Tab label="Job Details" />
+          <Tab label="Cost Analysis" icon={<Assessment />} iconPosition="end" />
+        </Tabs>
+      </Paper>
+
+      {activeTab === 0 && (
+        <Grid container spacing={3}>
         {/* Job Information */}
         <Grid size={{ xs: 12, md: 8 }}>
           <Card sx={{ mb: 3 }}>
@@ -394,6 +407,11 @@ const JobDetail: React.FC = () => {
           </Card>
         </Grid>
       </Grid>
+      )}
+
+      {activeTab === 1 && (
+        <JobCostingReport jobId={id} />
+      )}
     </Box>
   );
 };
