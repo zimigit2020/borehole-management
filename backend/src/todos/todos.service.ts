@@ -60,8 +60,8 @@ export class TodosService {
     if (todo.createdBy.id !== user.id && 
         todo.assignedTo?.id !== user.id && 
         user.role !== UserRole.ADMIN && 
-        user.role !== UserRole.MANAGER &&
-        user.role !== UserRole.MANAGER && user.role !== UserRole.PROJECT_MANAGER) {
+        user.role !== UserRole.MANAGER && 
+        user.role !== UserRole.PROJECT_MANAGER) {
       throw new ForbiddenException('You do not have access to this todo');
     }
 
