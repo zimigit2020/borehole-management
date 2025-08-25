@@ -2,6 +2,7 @@ import { Injectable, ConflictException, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -45,6 +46,17 @@ export class UsersService {
 
   async updateLastLogin(id: string): Promise<void> {
     await this.usersRepository.update(id, { lastLogin: new Date() });
+  }
+
+  async changePassword(id: string, newPassword: string): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.usersRepository.update(id, { password: hashedPassword });
+    return this.findOne(id);
   }
 
   async delete(id: string): Promise<void> {

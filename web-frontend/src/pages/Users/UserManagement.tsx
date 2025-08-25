@@ -286,11 +286,28 @@ const UserManagement: React.FC = () => {
     if (!selectedUser) return;
     
     try {
-      // TODO: Implement password reset endpoint
-      // await usersService.resetPassword(selectedUser.id);
-      setSuccess('Password reset email sent');
+      const newPassword = prompt('Enter new password for this user:');
+      if (newPassword && newPassword.length >= 6) {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${selectedUser.id}/password`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ password: newPassword }),
+        });
+        
+        if (response.ok) {
+          setSuccess('Password changed successfully');
+        } else {
+          throw new Error('Failed to change password');
+        }
+      } else if (newPassword) {
+        setError('Password must be at least 6 characters');
+      }
     } catch (err) {
-      setError('Failed to reset password');
+      setError('Failed to change password');
     }
     handleCloseMenu();
   };

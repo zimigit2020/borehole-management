@@ -35,6 +35,15 @@ export class UsersController {
     return this.usersService.update(id, updateData);
   }
 
+  @Put(':id/password')
+  @ApiOperation({ summary: 'Change user password' })
+  changePassword(
+    @Param('id') id: string,
+    @Body() passwordData: { password: string }
+  ) {
+    return this.usersService.changePassword(id, passwordData.password);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user' })
   remove(@Param('id') id: string) {
