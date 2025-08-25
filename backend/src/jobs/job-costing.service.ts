@@ -30,7 +30,6 @@ export class JobCostingService {
   async getJobCostingReport(jobId: string): Promise<JobCostingReport> {
     const job = await this.jobRepository.findOne({
       where: { id: jobId },
-      relations: ['client'],
     });
 
     if (!job) {
@@ -134,8 +133,8 @@ export class JobCostingService {
 
     return {
       jobId: job.id,
-      jobNumber: job.jobNumber,
-      clientName: job.client?.name || 'Unknown',
+      jobNumber: job.jobNumber || job.name,
+      clientName: job.clientName || 'Unknown',
       siteName: job.siteName,
       status: job.status,
       startDate: job.createdAt,
