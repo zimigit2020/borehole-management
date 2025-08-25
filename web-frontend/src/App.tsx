@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import JobList from './pages/Jobs/JobList';
 import JobDetail from './pages/Jobs/JobDetail';
+import JobCreate from './pages/Jobs/JobCreate';
 import MapView from './pages/MapView';
 import UserManagement from './pages/Users/UserManagement';
 import SurveyReports from './pages/Surveys/SurveyReports';
@@ -119,6 +120,7 @@ function App() {
             >
               <Route index element={<Dashboard />} />
               <Route path="jobs" element={<JobList />} />
+              <Route path="jobs/new" element={<JobCreate />} />
               <Route path="jobs/:id" element={<JobDetail />} />
               <Route path="map" element={<MapView />} />
               <Route path="users" element={<UserManagement />} />

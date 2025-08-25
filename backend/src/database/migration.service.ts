@@ -510,6 +510,35 @@ export class MigrationService implements OnModuleInit {
           console.log('⚠ expenses table might already exist');
         }
 
+        // Create todos table if it doesn't exist
+        const createTodosTable = `
+          CREATE TABLE IF NOT EXISTS "todos" (
+            "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+            "title" VARCHAR NOT NULL,
+            "description" TEXT,
+            "status" VARCHAR DEFAULT 'pending',
+            "priority" VARCHAR DEFAULT 'medium',
+            "dueDate" TIMESTAMP,
+            "completedAt" TIMESTAMP,
+            "assignedToId" uuid,
+            "createdById" uuid NOT NULL,
+            "jobId" uuid,
+            "tags" text[],
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY ("assignedToId") REFERENCES "users"("id") ON DELETE SET NULL,
+            FOREIGN KEY ("createdById") REFERENCES "users"("id") ON DELETE CASCADE,
+            FOREIGN KEY ("jobId") REFERENCES "jobs"("id") ON DELETE CASCADE
+          )
+        `;
+
+        try {
+          await queryRunner.query(createTodosTable);
+          console.log('✓ Created todos table');
+        } catch (error) {
+          console.log('⚠ todos table might already exist');
+        }
+
         // Create purchase order tables if they don't exist
         const createPurchaseOrdersTable = `
           DO $$ BEGIN

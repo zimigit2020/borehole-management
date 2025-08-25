@@ -656,6 +656,15 @@ const DrillingOperations: React.FC = () => {
                         variant="contained" 
                         fullWidth
                         startIcon={<PlayArrow />}
+                        onClick={() => {
+                          // Update job status to drilling
+                          const updatedJobs = jobs.map(j => 
+                            j.id === job.id 
+                              ? { ...j, status: 'drilling', startDate: new Date().toISOString() }
+                              : j
+                          );
+                          setJobs(updatedJobs);
+                        }}
                       >
                         Start Drilling
                       </Button>

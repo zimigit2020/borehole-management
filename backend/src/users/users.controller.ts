@@ -17,6 +17,12 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Post()
+  @ApiOperation({ summary: 'Create a new user' })
+  create(@Body() createUserData: Partial<User>) {
+    return this.usersService.create(createUserData);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
   findOne(@Param('id') id: string) {
